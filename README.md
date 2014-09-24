@@ -1,7 +1,7 @@
 Sails-Generate-Ember-Blueprints
 ======================
 
-`Version 0.0.1`
+[![NPM version](https://badge.fury.io/js/sails-generate-ember-blueprints.svg)](http://badge.fury.io/js/sails-generate-ember-blueprints)
 
 Ember Data compatible blueprints for Sails v0.10
 
