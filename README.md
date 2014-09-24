@@ -43,6 +43,13 @@ However, there is a more [complete list of expected responses](https://stackover
 
 Now you should be up and running and your Ember Data app should be able to talk to your Sails backend.
 
+
+### Troubleshooting
+
+If the generator exits with 
+`error: Something else already exists at ... ` you can try running it with the `
+--force` option (at your own risk!)
+
 ### Ember RESTAdapter
 
 If you're using [Ember CLI](//ember-cli.com), you only need to setup the RESTAdapter as the application adapter.
