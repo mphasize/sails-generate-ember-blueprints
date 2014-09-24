@@ -1,0 +1,41 @@
+{
+  "name": "sails-generate-ember-blueprints",
+  "version": "0.0.1",
+  "description": "Generate a Ember Data compatible blueprints in your Sails project.",
+  "author": {
+    "name": "Marcus Paeschke",
+    "email": "marcus@incom.org"
+  },
+  "main": "lib/index.js",
+  "homepage": "https://github.com/mphasize/sails-generate-ember-blueprints",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mphasize/sails-generate-ember-blueprints.git"
+  },
+  "bugs": {
+    "url": "http://github.com/mphasize/sails-generate-ember-blueprints/issues",
+    "email": "marcus@incom.org"
+  },
+  "keywords": [
+    "sails",
+    "ember",
+    "generator",
+    "generate",
+    "blueprint"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "lodash": ">=2.4.x",
+    "pluralize": ">=0.1.0",
+    "merge-defaults": ">=0.1.0"
+  },
+  "devDependencies": {
+    "sails-generate": "*",
+    "fs-extra": "*"
+  },
+  "sailsGenerator": {
+    "type": "ember-blueprints",
+    "behavior": "add `sails generate ember-blueprints`",
+    "sailsVersion": "0.10.x"
+  }
+}
