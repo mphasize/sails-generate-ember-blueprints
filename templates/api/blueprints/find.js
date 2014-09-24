@@ -5,10 +5,15 @@ var util = require( 'util' ),
   actionUtil = require( './_util/actionUtil' );
 
 /**
- * Switch to enable sideloading records - this is a temporary workaround until we find a more general solution
+ * Enable sideloading. Edit config/blueprints.js and add:
+ *   ember: {
+ *     sideload: true
+ *   }
+ * Defaults to false.
+ *
  * @type {Boolean}
  */
-var performSideload = false;
+var performSideload = (sails.config.blueprints.ember && sails.config.blueprints.ember.sideload);
 
 /**
  * Find Records
