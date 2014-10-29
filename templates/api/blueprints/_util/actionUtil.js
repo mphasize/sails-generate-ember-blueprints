@@ -89,6 +89,29 @@ module.exports = {
   },
 
   /**
+   * Insert meta data into an API payload and is to be extracted
+   * by the emberjs RESTSerializer
+   *
+   * @param {Object} payload
+   * @param {Object} data
+   * @return {Object} The returned structure can be consumed by DS.RESTAdapter when passed to res.json()
+   */
+  insertMeta: function ( payload, data ) {
+    if ( typeof payload !== 'object' ) {
+      throw new Error( 'No JSON payload has been passed. Run records through emberizeJSON first' );
+    }
+
+    if ( typeof data !== 'object' ) {
+      throw new Error( 'No meta data has been passed. Should be an object with 0 or more properties' );
+    }
+
+    payload.meta = payload.meta || {};
+    payload.meta = _.merge ( {}, payload.meta, data );
+
+    return payload;
+  },
+
+  /**
    * Given a Waterline query, populate the appropriate/specified
    * association attributes and return it so it can be chained
    * further ( i.e. so you can .exec() it )
