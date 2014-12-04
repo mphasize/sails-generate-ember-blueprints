@@ -19,6 +19,17 @@ Ember Data expects the JSON responses from the API to follow certain conventions
 Some of these conventions are mentioned in the [Ember model guide](http://emberjs.com/guides/models/connecting-to-an-http-server/).
 However, there is a more [complete list of expected responses](https://stackoverflow.com/questions/14922623/what-is-the-complete-list-of-expected-json-responses-for-ds-restadapter) on Stackoverflow.
 
+As a **quick example**, if you create a `post` model under the namespace `api/v1` you can access the model under `localhost:1337/api/v1/posts` and to create a new Record send a POST request using the following JSON:
+
+```js
+{
+  "post": {
+    "title": "A new post"
+    "content": "This is the wonderful content of this new post."
+  }
+}
+```
+
 
 
 # Getting started
