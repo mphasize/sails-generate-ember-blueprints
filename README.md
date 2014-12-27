@@ -132,4 +132,4 @@ The blueprints in this repository should provide a starting point for a Sails ba
 
 This generator is based on the [sails-ember-blueprints](https://github.com/mphasize/sails-ember-blueprints).
 
-@artificialio used these blueprints to create the first version of their Vagrant-based [Sails Ember Starter Kit](https://artificialio.github.io/sane/).
+@artificialio used these blueprints to create the first version of their Docker-based [Sane Stack](http://sanestack.com/).
