@@ -31,7 +31,13 @@ module.exports = {
 
     var plural = Array.isArray( records ) ? true : false;
 
-    var documentIdentifier = plural ? pluralize( model.identity ) : model.identity;
+    var documentIdentifier = plural ? pluralize( model.globalId ) : model.globalId;
+    //turn id into camelCase for ember
+    documentIdentifier = documentIdentifier.replace(/(?:^\w|[A-Z]|\b\w|\s+)/g,
+    function(match, index) {
+      if (+match === 0) return ""; // or if (/\s+/.test(match)) for white spaces
+      return index == 0 ? match.toLowerCase() : match.toUpperCase();
+    });
     var json = {};
 
     json[ documentIdentifier ] = plural ? [] : {};
