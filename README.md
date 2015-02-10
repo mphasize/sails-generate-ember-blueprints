@@ -13,14 +13,6 @@ The blueprints in this repository are meant as a starting point to make Sails wo
 `!` *On August 18th, [Ember Data 1.0 beta-9](http://emberjs.com/blog/2014/08/18/ember-data-1-0-beta-9-released.html) was released, including a lot of improvements for delivering model associations/relations as Embedded Records (instead of Sideloading). Embedding records is much closer to what Sails does orginally, so it might be better to move into that direction. But since the actual JSON API structure is very different for these two approaches and since most APIs will be designed to work with multiple clients, I'd like to see support/alternatives for both ways. If you happen to know a project that will support the embedded style, please send me a note!*
 
 
-### Ember Data expectations
-
-Ember Data expects the JSON responses from the API to follow certain conventions. 
-Some of these conventions are mentioned in the [Ember model guide](http://emberjs.com/guides/models/connecting-to-an-http-server/).
-However, there is a more [complete list of expected responses](https://stackoverflow.com/questions/14922623/what-is-the-complete-list-of-expected-json-responses-for-ds-restadapter) on Stackoverflow.
-
-
-
 # Getting started
 
 
@@ -94,6 +86,20 @@ If you want to access the REST routes with your own client or a tool like [Postm
     Accept: application/json
     Content-Type: application/json
 
+Furthermore Ember Data expects the JSON responses from the API to follow certain conventions. 
+Some of these conventions are mentioned in the [Ember model guide](http://emberjs.com/guides/models/connecting-to-an-http-server/).
+However, there is a more [complete list of expected responses](https://stackoverflow.com/questions/14922623/what-is-the-complete-list-of-expected-json-responses-for-ds-restadapter) on Stackoverflow.
+
+As a **quick example**, if you create a `post` model under the namespace `api/v1` you can access the model under `localhost:1337/api/v1/posts` and to create a new Record send a POST request using the following JSON:
+
+```js
+{
+  "post": {
+    "title": "A new post"
+    "content": "This is the wonderful content of this new post."
+  }
+}
+```
 
 
 # Todo
@@ -121,4 +127,4 @@ The blueprints in this repository should provide a starting point for a Sails ba
 
 This generator is based on the [sails-ember-blueprints](https://github.com/mphasize/sails-ember-blueprints).
 
-@artificialio used these blueprints to create the first version of their Vagrant-based [Sails Ember Starter Kit](https://artificialio.github.io/sane/).
+@artificialio used these blueprints to create the first version of their Docker-based [Sane Stack](http://sanestack.com/).
