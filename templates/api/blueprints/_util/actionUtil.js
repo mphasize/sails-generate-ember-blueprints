@@ -311,8 +311,15 @@ module.exports = {
       throw new Error( 'Invalid `req.options.values.blacklist`. Should be an array of strings (parameter names.)' );
     }
 
-    // Get values using the model identity as resource identifier
-    var values = req.param( model.identity ) || {};
+    //turn id into camelCase for ember
+		var emberModelIdentity = model.globalId.replace( /(?:^\w|[A-Z]|\b\w|\s+)/g,
+			function ( match, index ) {
+				if ( +match === 0 ) return ""; // or if (/\s+/.test(match)) for white spaces
+				return index == 0 ? match.toLowerCase() : match.toUpperCase();
+			} );
+		
+		// Get values using the model identity as resource identifier
+		var values = req.param( emberModelIdentity ) ||  {};
 
     // Omit built-in runtime config (like query modifiers)
     values = _.omit( values, blacklist || [] );
