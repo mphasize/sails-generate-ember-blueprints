@@ -27,7 +27,8 @@
   "dependencies": {
     "lodash": ">=2.4.x",
     "pluralize": ">=0.1.0",
-    "merge-defaults": ">=0.1.0"
+    "merge-defaults": ">=0.1.0",
+    "fs-extra": "~0.16.3"
   },
   "devDependencies": {
     "sails-generate": "*",
