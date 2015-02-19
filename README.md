@@ -12,6 +12,13 @@ The blueprints in this repository are meant as a starting point to make Sails wo
 
 `!` *On August 18th, [Ember Data 1.0 beta-9](http://emberjs.com/blog/2014/08/18/ember-data-1-0-beta-9-released.html) was released, including a lot of improvements for delivering model associations/relations as Embedded Records (instead of Sideloading). Embedding records is much closer to what Sails does orginally, so it might be better to move into that direction. But since the actual JSON API structure is very different for these two approaches and since most APIs will be designed to work with multiple clients, I'd like to see support/alternatives for both ways. If you happen to know a project that will support the embedded style, please send me a note!*
 
+# API flavors
+
+The generators support different flavors for your API. Currently we have "basic" and "advanced" flavors. Basic blueprints should get you up and running in no time and serve as a good basis to start development.
+
+If you need more powerful control over your API, you may consider upgrading to the "advanced" blueprints. Of course, you also need to setup and configure more stuff here.
+
+**Contributers:** It would be great to also get an "embedded" flavor of the API, that supports Embers embedded records style instead of sideloading records.
 
 # Getting started
 
@@ -34,6 +41,24 @@ The blueprints in this repository are meant as a starting point to make Sails wo
 * Start your app with `sails lift`
 
 Now you should be up and running and your Ember Data app should be able to talk to your Sails backend.
+
+### Advanced Blueprints
+
+The "basic" blueprints make a basic Sails app work with Ember Data, but in a more complex project you may need more fine-grained control over how the Sails Rest API handles associations/relations and what is included in the API responses. Enter the "advanced" blueprints.
+
+* Run the generator with: `sails generate ember-blueprints advanced --force` to update to the advanced blueprints.
+* Add a configuration option `associations: { list: "index", detail: "record" }`
+ to `myproject/config/models.js`. This will determine the default behaviour.
+* Add a configuration option `validations: { ignoreProperties: [ 'includeIn' ] }`
+to `myproject/config/models.js`.
+* Setup individual presentation on a model attribute by adding `includeIn: { list: "option", detail: "option"}` where option is one of `link`, `index`, `record`.
+
+**Presentation options:**  
+The `link` setting will generate jsonapi.org URL style `links` properties on the records, which Ember Data can consume and load lazily.
+
+The `index` setting will generate an array of ID references for Ember Data, so be loaded as necessary.
+
+The `record` setting will sideload the complete record.
 
 
 ### Troubleshooting
@@ -62,6 +87,8 @@ In your Ember project: app/adapters/application.js
 If you have logged in users and you always want to associate newly created records with the current user, take a look at `blueprints/create.js` lines 25-31 and uncomment the code if it fits your needs.
 
 ### Sideloading records
+
+(*basic* blueprints only!)
 
 The `emberizeJSON` method in *actionUtil.js* can transform your populated *embedded* records into sideloaded records, but you have to decide when is the right time to do this depending on your API needs.
 
