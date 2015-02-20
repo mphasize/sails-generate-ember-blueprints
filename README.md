@@ -3,28 +3,32 @@ Sails-Generate-Ember-Blueprints
 
 [![NPM version](https://badge.fury.io/js/sails-generate-ember-blueprints.svg)](http://badge.fury.io/js/sails-generate-ember-blueprints)
 
-Ember Data compatible blueprints for Sails v0.10
+Ember Data compatible blueprints for Sails v0.10+
 
+[Sails](http://www.sailsjs.org/) supports overriding the default blueprints, which gives us a remarkable flexibility in making Sails work together with a variety of clients and frontend libraries.
 
-Since version v0.10 [Sails](http://beta.sailsjs.org/) supports overriding the default blueprints, which gives us a remarkable flexibility in making Sails work together with a variety of clients and frontend libraries.
+The blueprints in this repository are meant as a starting point to modify the Sails API JSON output to make it work with Ember, Ember Data and the default Ember Data RESTAdapter.
 
-The blueprints in this repository are meant as a starting point to make Sails work with Ember, Ember Data and the default Ember Data RESTAdapter.
-
-`!` *On August 18th, [Ember Data 1.0 beta-9](http://emberjs.com/blog/2014/08/18/ember-data-1-0-beta-9-released.html) was released, including a lot of improvements for delivering model associations/relations as Embedded Records (instead of Sideloading). Embedding records is much closer to what Sails does orginally, so it might be better to move into that direction. But since the actual JSON API structure is very different for these two approaches and since most APIs will be designed to work with multiple clients, I'd like to see support/alternatives for both ways. If you happen to know a project that will support the embedded style, please send me a note!*
+If you're looking for something that makes Ember work with the standard Sails API, take a look at [ember-data-sails-adapter](https://github.com/bmac/ember-data-sails-adapter) and the alternatives discussed there.
 
 # API flavors
 
-The generators support different flavors for your API. Currently we have "basic" and "advanced" flavors. Basic blueprints should get you up and running in no time and serve as a good basis to start development.
+The generators support different flavors for your API.
 
-If you need more powerful control over your API, you may consider upgrading to the "advanced" blueprints. Of course, you also need to setup and configure more stuff here.
+**basic**: Basic blueprints should get you up and running in no time and serve as a good basis to start development. They come with a default configuration that sideloads all records found in the model's associations.
 
-**Contributers:** It would be great to also get an "embedded" flavor of the API, that supports Embers embedded records style instead of sideloading records.
+**advanced**: If you need more powerful control over your API, you may consider upgrading to the "advanced" blueprints. These blueprints allow fine-grained control over how API responses handle sideloading a model's associations.
+
+And some future ideas...
+
+**embedded**: Unfortunately not yet available, but at some point in time we hope to support an embedded records flavor that can be consumed by Embers EmbeddedRecorsMixin. **Contributers please get in touch.** 
+
+**json-api**: Unfortunately not yet available, but it would also be great to support 100% [json api](http://jsonapi.org/) compatible responses.
 
 # Getting started
 
 
 * Install the generator into your (new) Sails project `npm install sails-generate-ember-blueprints`
-* Add node dependencies `npm install --save lodash` and `npm install --save pluralize`
 * Run the generator: `sails generate ember-blueprints` 
 * Configure sails to use **pluralized** blueprint routes.
 
@@ -47,11 +51,41 @@ Now you should be up and running and your Ember Data app should be able to talk 
 The "basic" blueprints make a basic Sails app work with Ember Data, but in a more complex project you may need more fine-grained control over how the Sails Rest API handles associations/relations and what is included in the API responses. Enter the "advanced" blueprints.
 
 * Run the generator with: `sails generate ember-blueprints advanced --force` to update to the advanced blueprints.
-* Add a configuration option `associations: { list: "index", detail: "record" }`
+* Add a configuration option `associations: { list: "link", detail: "record" }`
  to `myproject/config/models.js`. This will determine the default behaviour.
+
+      module.exports.models = {
+        // ...
+        associations: {
+        	list: "link",
+        	detail: "record"
+        }
+      };
+ 
 * Add a configuration option `validations: { ignoreProperties: [ 'includeIn' ] }`
-to `myproject/config/models.js`.
+to `myproject/config/models.js`. This tells Sails to ignore our individual configuration on a model's attributes.
+
+      module.exports.models = {
+        // ...
+        validations: {
+        	ignoreProperties: ['includeIn']
+        }
+      };
+
 * Setup individual presentation on a model attribute by adding `includeIn: { list: "option", detail: "option"}` where option is one of `link`, `index`, `record`.
+
+      attributes: {
+        name : "string",
+        posts: {
+          collection: "post",
+          via: "user",
+          includeIn: {
+            list: "record",
+            detail: "record"
+          }
+        }
+      }
+
 
 **Presentation options:**  
 The `link` setting will generate jsonapi.org URL style `links` properties on the records, which Ember Data can consume and load lazily.
@@ -84,7 +118,9 @@ In your Ember project: app/adapters/application.js
 
 ### Create with current user
 
-If you have logged in users and you always want to associate newly created records with the current user, take a look at `blueprints/create.js` lines 25-31 and uncomment the code if it fits your needs.
+@todo: Find a new solution for this with the shallow blueprints...
+
+/ If you have logged in users and you always want to associate newly created records with the current user, take a look at `blueprints/create.js` lines 25-31 and uncomment the code if it fits your needs. /
 
 ### Sideloading records
 
@@ -133,13 +169,11 @@ As a **quick example**, if you create a `post` model under the namespace `api/v1
 
 ### Generator: Improve installation
 
-- install dependencies while running the generator
 - setup configuration while running the generator
 
 ### Blueprints: Support pagination metadata
 
-Ember Data supports information about pagination in the form of a `meta` attribute at the top level of the generated JSON response. See description in the [Handling Metadata](http://emberjs.com/guides/models/handling-metadata/) Guide. Supporting this out-of-the-box might be a nice addition for the blueprints.
-
+- the **advanced** blueprints support pagination meta data
 
 ### Testing: Make the blueprints testable
 
@@ -150,8 +184,6 @@ I am still trying to figure out how to make these blueprints more maintainable a
 The blueprints in this repository should provide a starting point for a Sails backend that works with an Ember frontend app. However, there are a lot of things missing that would be needed for a full blown app (like authentication and access control) but these things don't really fit into the blueprints.
 
 
-# Related
-
-This generator is based on the [sails-ember-blueprints](https://github.com/mphasize/sails-ember-blueprints).
+# Sane Stack
 
 @artificialio used these blueprints to create the first version of their Docker-based [Sane Stack](http://sanestack.com/).
