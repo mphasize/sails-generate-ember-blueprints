@@ -10,7 +10,7 @@ var cloneDeep   = require('lodash/Lang/cloneDeep');
  * Switch to enable sideloading records - this is a temporary workaround until we find a more general solution
  * @type {Boolean}
  */
-var performSideload = false;
+var performSideload = (sails.config.blueprints.ember && sails.config.blueprints.ember.sideload);
 
 /**
  * Update One Record
