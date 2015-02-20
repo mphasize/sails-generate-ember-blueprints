@@ -349,7 +349,7 @@ module.exports = {
 		}
 
 		// Get values using the model identity as resource identifier
-		var values = req.param( model.identity ) || {};
+		var values = req.param( Ember.emberizeModelIdentity(model )) || {};
 
 		// Omit built-in runtime config (like query modifiers)
 		values = _.omit( values, blacklist || [] );
