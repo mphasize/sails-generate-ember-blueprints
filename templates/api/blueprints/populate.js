@@ -2,7 +2,7 @@
  * Module dependencies
  */
 var util        = require('util');
-var actionUtil  = require('_util/actionUtil');
+var actionUtil  = require('./_util/actionUtil');
 var find        = require('lodash/Collection/find');
 
 /**
