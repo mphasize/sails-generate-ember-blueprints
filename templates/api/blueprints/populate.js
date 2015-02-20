@@ -1,9 +1,9 @@
 /**
  * Module dependencies
  */
-var util = require( 'util' ),
-  actionUtil = require( './_util/actionUtil' ),
-  _ = require( 'lodash' );
+var util        = require('util');
+var actionUtil  = require('_util/actionUtil');
+var find        = require('lodash/Collection/find');
 
 /**
  * Populate (or "expand") an association
@@ -61,7 +61,7 @@ module.exports = function expand( req, res ) {
       }
 
       // find the model identity and the Collection for this relation
-      var association = _.find( req.options.associations, {
+      var association = find( req.options.associations, {
         alias: relation
       } );
       var relationIdentity = association.type === "model" ? association.model : association.collection;

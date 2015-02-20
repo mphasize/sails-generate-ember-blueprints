@@ -2,20 +2,15 @@
  * Module dependencies
  */
 
-var actionUtil = require( './_util/actionUtil' );
-var util = require( 'util' );
-var _ = require( 'lodash' );
+var actionUtil  = require( './_util/actionUtil' );
+var util        = require( 'util' );
+var cloneDeep   = require('lodash/Lang/cloneDeep');
 
 /**
- * Enable sideloading. Edit config/blueprints.js and add:
- *   ember: {
- *     sideload: true
- *   }
- * Defaults to false.
- *
+ * Switch to enable sideloading records - this is a temporary workaround until we find a more general solution
  * @type {Boolean}
  */
-var performSideload = (sails.config.blueprints.ember && sails.config.blueprints.ember.sideload);
+var performSideload = false;
 
 /**
  * Update One Record
@@ -78,7 +73,7 @@ module.exports = function updateOneRecord( req, res ) {
         if ( req.isSocket ) {
           Model.subscribe( req, records );
         }
-        Model.publishUpdate( pk, _.cloneDeep( values ), !req.options.mirror && req, {
+        Model.publishUpdate( pk, cloneDeep( values ), !req.options.mirror && req, {
           previous: matchingRecord.toJSON()
         } );
       }
