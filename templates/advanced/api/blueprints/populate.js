@@ -38,7 +38,16 @@ module.exports = function expand( req, res ) {
 	// specified primary key of the child record, or with no
 	// filter at all.
 	var childPk = actionUtil.parsePk( req );
-	var where = childPk ? [ childPk ] : actionUtil.parseCriteria( req );
+
+	// Coerce the child PK to an integer if necessary
+	if ( childPk ) {
+		if ( Model.attributes[ Model.primaryKey ].type == 'integer' ) {
+			childPk = +childPk || 0;
+		}
+	}
+
+	var where = childPk ? {id: [childPk]} : actionUtil.parseCriteria(req);
+
 	var skip = actionUtil.parseSkip( req );
 	var limit = actionUtil.parseLimit( req );
 	var sort = actionUtil.parseSort( req );
