@@ -31,8 +31,7 @@
     "fs-extra": "~0.16.3"
   },
   "devDependencies": {
-    "sails-generate": "*",
-    "fs-extra": "*"
+    "sails-generate": "*"
   },
   "sailsGenerator": {
     "type": "ember-blueprints",
