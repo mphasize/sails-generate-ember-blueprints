@@ -71,7 +71,7 @@ module.exports = function createRecord( req, res ) {
 				// Send JSONP-friendly response if it's supported
 				// (HTTP 201: Created)
 				res.status( 201 );
-				res.ok( Ember.buildResponse( Model, populatedRecord, associations, true, associated ) );
+				res.json( Ember.buildResponse( Model, populatedRecord, associations, true, associated ) );
 			} );
 
 		} );
