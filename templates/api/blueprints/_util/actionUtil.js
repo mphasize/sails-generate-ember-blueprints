@@ -14,6 +14,7 @@ var isUndefined   = require('lodash/Lang/isUndefined');
 var create        = require('lodash/Object/create');
 var omit          = require('lodash/Object/omit');
 var merge         = require('lodash/Object/merge');
+var camelCase     = require('lodash/String/camelCase');
 
 var util      = require('util');
 var pluralize = require('pluralize');
@@ -46,11 +47,7 @@ module.exports = {
     var documentIdentifier = plural ? pluralize( model.globalId ) : model.globalId;
 
     //turn id into camelCase for ember
-    documentIdentifier = documentIdentifier.replace(/(?:^\w|[A-Z]|\b\w|\s+)/g,
-    function(match, index) {
-      if (+match === 0) return ""; // or if (/\s+/.test(match)) for white spaces
-      return index == 0 ? match.toLowerCase() : match.toUpperCase();
-    });
+    documentIdentifier = camelCase(documentIdentifier);
 
     var json = {};
 
@@ -59,7 +56,12 @@ module.exports = {
     if ( sideload ) {
       // prepare for sideloading
       forEach( associations, function ( assoc ) {
-        var assocName = assoc.type === "collection" ? pluralize( assoc.collection ) : pluralize( assoc.model );
+        var assocName;
+        if (assoc.type === 'collection') {
+          assocName = pluralize(camelCase(sails.models[assoc.collection].globalId));
+        } else {
+          assocName = pluralize(camelCase(sails.models[assoc.model].globalId));
+        }
 
         // initialize jsoning object
         if ( !json.hasOwnProperty( assoc.alias ) ) {
@@ -72,7 +74,12 @@ module.exports = {
       // get rid of the record's prototype ( otherwise the .toJSON called in res.send would re-insert embedded records)
       record = create( {}, record.toJSON() );
       forEach( associations, function ( assoc ) {
-        var assocName = assoc.type === "collection" ? pluralize( assoc.collection ) : pluralize( assoc.model );
+        var assocName;
+        if (assoc.type === 'collection') {
+          assocName = pluralize(camelCase(sails.models[assoc.collection].globalId));
+        } else {
+          assocName = pluralize(camelCase(sails.models[assoc.model].globalId));
+        }
 
         if ( assoc.type === "collection" && record[ assoc.alias ] && record[ assoc.alias ].length > 0 ) {
           if ( sideload ) json[ assocName ] = json[ assocName ].concat( record[ assoc.alias ] );
@@ -326,7 +333,7 @@ module.exports = {
     }
 
     // Get values using the model identity as resource identifier
-    var values = req.param( model.identity ) || {};
+    vvar values = req.param( camelCase(model.globalId) ) || {};
 
     // Omit built-in runtime config (like query modifiers)
     values = omit( values, blacklist || [] );
