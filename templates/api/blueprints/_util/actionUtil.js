@@ -2,19 +2,19 @@
  * Module dependencies
  */
 
-var uniq          = require('lodash/Array/uniq');
-var forEach       = require('lodash/Collection/forEach');
-var pluck         = require('lodash/Collection/pluck');
-var includes      = require('lodash/Collection/includes');
-var isArray       = require('lodash/Lang/isArray');
-var isString      = require('lodash/Lang/isString');
-var isPlainObject = require('lodash/Lang/isPlainObject');
-var isObject      = require('lodash/Lang/isObject');
-var isUndefined   = require('lodash/Lang/isUndefined');
-var create        = require('lodash/Object/create');
-var omit          = require('lodash/Object/omit');
-var merge         = require('lodash/Object/merge');
-var camelCase     = require('lodash/String/camelCase');
+var uniq          = require('lodash/array/uniq');
+var forEach       = require('lodash/collection/forEach');
+var pluck         = require('lodash/collection/pluck');
+var includes      = require('lodash/collection/includes');
+var isArray       = require('lodash/lang/isArray');
+var isString      = require('lodash/lang/isString');
+var isPlainObject = require('lodash/lang/isPlainObject');
+var isObject      = require('lodash/lang/isObject');
+var isUndefined   = require('lodash/lang/isUndefined');
+var create        = require('lodash/object/create');
+var omit          = require('lodash/object/omit');
+var merge         = require('lodash/object/merge');
+var camelCase     = require('lodash/string/camelCase');
 
 var util      = require('util');
 var pluralize = require('pluralize');
@@ -333,7 +333,7 @@ module.exports = {
     }
 
     // Get values using the model identity as resource identifier
-    vvar values = req.param( camelCase(model.globalId) ) || {};
+    var values = req.param( camelCase(model.globalId) ) || {};
 
     // Omit built-in runtime config (like query modifiers)
     values = omit( values, blacklist || [] );
