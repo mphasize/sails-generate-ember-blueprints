@@ -17,8 +17,8 @@ The blueprints in this repository are meant as a starting point to make Sails wo
 
 
 * Install the generator into your (new) Sails project `npm install sails-generate-ember-blueprints`
-* Add node dependencies `npm install --save lodash` and `npm install --save pluralize`
-* Run the generator: `sails generate ember-blueprints` 
+* Add node dependencies `npm install --save lodash` (*Note: requires lodash 3.x*) and `npm install --save pluralize`
+* Run the generator: `sails generate ember-blueprints`
 * Configure sails to use **pluralized** blueprint routes.
 
 	In `myproject/config/blueprints.js` set `pluralize: true`
@@ -38,9 +38,8 @@ Now you should be up and running and your Ember Data app should be able to talk 
 
 ### Troubleshooting
 
-If the generator exits with 
-`error: Something else already exists at ... ` you can try running it with the `
---force` option (at your own risk!)
+If the generator exits with
+`error: Something else already exists at ... ` you can try running it with the `--force` option (at your own risk!)
 
 ### Ember RESTAdapter
 
@@ -86,7 +85,7 @@ If you want to access the REST routes with your own client or a tool like [Postm
     Accept: application/json
     Content-Type: application/json
 
-Furthermore Ember Data expects the JSON responses from the API to follow certain conventions. 
+Furthermore Ember Data expects the JSON responses from the API to follow certain conventions.
 Some of these conventions are mentioned in the [Ember model guide](http://emberjs.com/guides/models/connecting-to-an-http-server/).
 However, there is a more [complete list of expected responses](https://stackoverflow.com/questions/14922623/what-is-the-complete-list-of-expected-json-responses-for-ds-restadapter) on Stackoverflow.
 

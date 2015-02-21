@@ -2,9 +2,9 @@
  * Module dependencies
  */
 
-var actionUtil = require( './_util/actionUtil' );
-var util = require( 'util' );
-var _ = require( 'lodash' );
+var actionUtil  = require( './_util/actionUtil' );
+var util        = require( 'util' );
+var cloneDeep   = require('lodash/Lang/cloneDeep');
 
 /**
  * Enable sideloading. Edit config/blueprints.js and add:
@@ -78,7 +78,7 @@ module.exports = function updateOneRecord( req, res ) {
         if ( req.isSocket ) {
           Model.subscribe( req, records );
         }
-        Model.publishUpdate( pk, _.cloneDeep( values ), !req.options.mirror && req, {
+        Model.publishUpdate( pk, cloneDeep( values ), !req.options.mirror && req, {
           previous: matchingRecord.toJSON()
         } );
       }
