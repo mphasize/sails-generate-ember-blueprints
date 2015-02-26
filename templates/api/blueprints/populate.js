@@ -3,7 +3,7 @@
  */
 var util        = require('util');
 var actionUtil  = require('./_util/actionUtil');
-var find        = require('lodash/Collection/find');
+var find        = require('lodash/collection/find');
 
 /**
  * Populate (or "expand") an association

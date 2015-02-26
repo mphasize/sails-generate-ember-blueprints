@@ -4,7 +4,7 @@
 
 var actionUtil  = require( './_util/actionUtil' );
 var util        = require( 'util' );
-var cloneDeep   = require('lodash/Lang/cloneDeep');
+var cloneDeep   = require('lodash/lang/cloneDeep');
 
 /**
  * Enable sideloading. Edit config/blueprints.js and add:
