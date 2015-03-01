@@ -73,6 +73,16 @@ module.exports = function findRecords( req, res ) {
       } );
     }
 
-    res.ok( actionUtil.emberizeJSON( Model, matchingRecords, req.options.associations, performSideload ) );
+    // For pagination, grab the total number of record
+    Model.find().where( actionUtil.parseCriteria( req ) ).exec( function count( err, numberOfRecords ) {
+      // This is not super important, so on error just ignore.
+      if ( err ) {
+        return res.ok( actionUtil.emberizeJSON( Model, matchingRecords, req.options.associations, performSideload ) );
+      }
+
+      var records = numberOfRecords.length;
+      var emberize = actionUtil.emberizeJSON( Model, matchingRecords, req.options.associations, performSideload );
+      res.ok( actionUtil.insertMeta( emberize, { total: records } ) );
+    } );
   } );
 };
