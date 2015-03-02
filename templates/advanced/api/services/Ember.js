@@ -69,10 +69,15 @@ var Ember = {
 				var assocName = assoc.type === "collection" ? pluralize( assoc.collection ) : pluralize( assoc.model );
 				var assocModel;
 				if ( assoc.type === "collection" ) {
+					assocModel = sails.models[ assoc.collection ];
 					if ( sideload && assoc.include === "record" && record[ assoc.alias ] && record[ assoc.alias ].length > 0 ) {
-						assocModel = sails.models[ assoc.collection ];
-						record[ assoc.alias ] = Ember.linkAssociations( assocModel, record[ assoc.alias ] );
-						json[ assocName ] = json[ assocName ].concat( record[ assoc.alias ] );
+						// sideload association records with links for 3rd level associations
+						json[ assocName ] = json[ assocName ].concat( Ember.linkAssociations( assocModel, record[ assoc.alias ] ) );
+						// reduce association on primary record to an array of IDs
+						record[ assoc.alias ] = _.reduce( record[ assoc.alias ], function ( filtered, rec ) {
+							filtered.push( rec.id );
+							return filtered;
+						}, [] );
 					}
 					if ( assoc.include === "index" && associatedRecords[ assoc.alias ] ) record[ assoc.alias ] = _.reduce( associatedRecords[ assoc.alias ], function ( filtered, rec ) {
 						if ( rec[ emberModelIdentity ] === record.id ) filtered.push( rec.id );
@@ -126,11 +131,11 @@ var Ember = {
 			// add *links* for relationships to sideloaded records
 			_.each( json, function ( array, key ) {
 				if ( key === documentIdentifier ) return;
-				if(array.length > 0) {
-					if(!_.isNumber(array[0]) && !_.isString(array[0])) { // this is probably an array of records
-						var model = sails.models[ pluralize(key, 1) ];
-						console.log("Sideloaded records model: ", model.identity);
-						Ember.linkAssociations(model, array);
+				if ( array.length > 0 ) {
+					if ( !_.isNumber( array[ 0 ] ) && !_.isString( array[ 0 ] ) ) { // this is probably an array of records
+						var model = sails.models[ pluralize( key, 1 ) ];
+						console.log( "Sideloaded records model: ", model.identity );
+						Ember.linkAssociations( model, array );
 					}
 				}
 			} );
