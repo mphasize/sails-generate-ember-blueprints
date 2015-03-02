@@ -2,9 +2,22 @@
  * Module dependencies
  */
 
-var _ = require( 'lodash' ),
-  util = require( 'util' ),
-  pluralize = require( 'pluralize' );
+var uniq          = require('lodash/array/uniq');
+var forEach       = require('lodash/collection/forEach');
+var pluck         = require('lodash/collection/pluck');
+var includes      = require('lodash/collection/includes');
+var isArray       = require('lodash/lang/isArray');
+var isString      = require('lodash/lang/isString');
+var isPlainObject = require('lodash/lang/isPlainObject');
+var isObject      = require('lodash/lang/isObject');
+var isUndefined   = require('lodash/lang/isUndefined');
+var create        = require('lodash/object/create');
+var omit          = require('lodash/object/omit');
+var merge         = require('lodash/object/merge');
+var camelCase     = require('lodash/string/camelCase');
+
+var util      = require('util');
+var pluralize = require('pluralize');
 
 // Parameter used for jsonp callback is constant, as far as
 // blueprints are concerned (for now.)
@@ -32,20 +45,23 @@ module.exports = {
     var plural = Array.isArray( records ) ? true : false;
 
     var documentIdentifier = plural ? pluralize( model.globalId ) : model.globalId;
+
     //turn id into camelCase for ember
-    documentIdentifier = documentIdentifier.replace(/(?:^\w|[A-Z]|\b\w|\s+)/g,
-    function(match, index) {
-      if (+match === 0) return ""; // or if (/\s+/.test(match)) for white spaces
-      return index == 0 ? match.toLowerCase() : match.toUpperCase();
-    });
+    documentIdentifier = camelCase(documentIdentifier);
+
     var json = {};
 
     json[ documentIdentifier ] = plural ? [] : {};
 
     if ( sideload ) {
       // prepare for sideloading
-      _.each( associations, function ( assoc ) {
-        var assocName = assoc.type === "collection" ? pluralize( assoc.collection ) : pluralize( assoc.model );
+      forEach( associations, function ( assoc ) {
+        var assocName;
+        if (assoc.type === 'collection') {
+          assocName = pluralize(camelCase(sails.models[assoc.collection].globalId));
+        } else {
+          assocName = pluralize(camelCase(sails.models[assoc.model].globalId));
+        }
 
         // initialize jsoning object
         if ( !json.hasOwnProperty( assoc.alias ) ) {
@@ -56,13 +72,18 @@ module.exports = {
 
     var prepareOneRecord = function ( record ) {
       // get rid of the record's prototype ( otherwise the .toJSON called in res.send would re-insert embedded records)
-      record = _.create( {}, record.toJSON() );
-      _.each( associations, function ( assoc ) {
-        var assocName = assoc.type === "collection" ? pluralize( assoc.collection ) : pluralize( assoc.model );
+      record = create( {}, record.toJSON() );
+      forEach( associations, function ( assoc ) {
+        var assocName;
+        if (assoc.type === 'collection') {
+          assocName = pluralize(camelCase(sails.models[assoc.collection].globalId));
+        } else {
+          assocName = pluralize(camelCase(sails.models[assoc.model].globalId));
+        }
 
         if ( assoc.type === "collection" && record[ assoc.alias ] && record[ assoc.alias ].length > 0 ) {
           if ( sideload ) json[ assocName ] = json[ assocName ].concat( record[ assoc.alias ] );
-          record[ assoc.alias ] = _.pluck( record[ assoc.alias ], 'id' );
+          record[ assoc.alias ] = pluck( record[ assoc.alias ], 'id' );
         }
         if ( assoc.type === "model" && record[ assoc.alias ] ) {
           if ( sideload ) json[ assocName ] = json[ assocName ].concat( record[ assoc.alias ] );
@@ -74,7 +95,7 @@ module.exports = {
 
     // many or just one?
     if ( plural ) {
-      _.each( records, function ( record ) {
+      forEach( records, function ( record ) {
         json[ documentIdentifier ] = json[ documentIdentifier ].concat( prepareOneRecord( record ) );
       } );
     } else {
@@ -83,9 +104,9 @@ module.exports = {
 
     if ( sideload ) {
       // filter duplicates in sideloaded records
-      _.each( json, function ( array, key ) {
+      forEach( json, function ( array, key ) {
         if ( !plural && key === documentIdentifier ) return;
-        json[ key ] = _.uniq( array, function ( record ) {
+        json[ key ] = uniq( array, function ( record ) {
           return record.id;
         } );
       } );
@@ -123,7 +144,7 @@ module.exports = {
 
       // If an alias filter was provided, override the blueprint config.
       if ( aliasFilter ) {
-        shouldPopulate = _.contains( aliasFilter, association.alias );
+        shouldPopulate = includes( aliasFilter, association.alias );
       }
 
       // Only populate associations if a population filter has been supplied
@@ -155,7 +176,7 @@ module.exports = {
    * @return {[type]}              [description]
    */
   subscribeDeep: function ( req, record ) {
-    _.each( req.options.associations, function ( assoc ) {
+    forEach( req.options.associations, function ( assoc ) {
 
       // Look up identity of associated model
       var ident = assoc[ assoc.type ];
@@ -167,7 +188,7 @@ module.exports = {
 
       // Subscribe to each associated model instance in a collection
       if ( assoc.type === 'collection' ) {
-        _.each( record[ assoc.alias ], function ( associatedInstance ) {
+        forEach( record[ assoc.alias ], function ( associatedInstance ) {
           AssociatedModel.subscribe( req, associatedInstance );
         } );
       }
@@ -195,7 +216,7 @@ module.exports = {
     // See coercePK for reference (although be aware it is not currently in use)
 
     // exclude criteria on id field
-    pk = _.isPlainObject( pk ) ? undefined : pk;
+    pk = isPlainObject( pk ) ? undefined : pk;
     return pk;
   },
 
@@ -240,7 +261,7 @@ module.exports = {
 
     // Validate blacklist to provide a more helpful error msg.
     var blacklist = req.options.criteria && req.options.criteria.blacklist;
-    if ( blacklist && !_.isArray( blacklist ) ) {
+    if ( blacklist && !isArray( blacklist ) ) {
       throw new Error( 'Invalid `req.options.criteria.blacklist`. Should be an array of strings (parameter names.)' );
     }
 
@@ -248,7 +269,7 @@ module.exports = {
     var where = req.params.all().where;
 
     // If `where` parameter is a string, try to interpret it as JSON
-    if ( _.isString( where ) ) {
+    if ( isString( where ) ) {
       where = tryToParseJSON( where );
     }
 
@@ -261,11 +282,11 @@ module.exports = {
       where = req.params.all();
 
       // Omit built-in runtime config (like query modifiers)
-      where = _.omit( where, blacklist || [ 'limit', 'skip', 'sort' ] );
+      where = omit( where, blacklist || [ 'limit', 'skip', 'sort' ] );
 
       // Omit any params w/ undefined values
-      where = _.omit( where, function ( p ) {
-        if ( _.isUndefined( p ) ) return true;
+      where = omit( where, function ( p ) {
+        if ( isUndefined( p ) ) return true;
       } );
 
       // Transform ids[ .., ..] request
@@ -276,16 +297,16 @@ module.exports = {
 
       // Omit jsonp callback param (but only if jsonp is enabled)
       var jsonpOpts = req.options.jsonp && !req.isSocket;
-      jsonpOpts = _.isObject( jsonpOpts ) ? jsonpOpts : {
+      jsonpOpts = isObject( jsonpOpts ) ? jsonpOpts : {
         callback: JSONP_CALLBACK_PARAM
       };
       if ( jsonpOpts ) {
-        where = _.omit( where, [ jsonpOpts.callback ] );
+        where = omit( where, [ jsonpOpts.callback ] );
       }
     }
 
     // Merge w/ req.options.where and return
-    where = _.merge( {}, req.options.where || {}, where ) || undefined;
+    where = merge( {}, req.options.where || {}, where ) || undefined;
 
     return where;
   },
@@ -307,28 +328,28 @@ module.exports = {
 
     // Validate blacklist to provide a more helpful error msg.
     var blacklist = req.options.values.blacklist;
-    if ( blacklist && !_.isArray( blacklist ) ) {
+    if ( blacklist && !isArray( blacklist ) ) {
       throw new Error( 'Invalid `req.options.values.blacklist`. Should be an array of strings (parameter names.)' );
     }
 
     // Get values using the model identity as resource identifier
-    var values = req.param( model.identity ) || {};
+    var values = req.param( camelCase(model.globalId) ) || {};
 
     // Omit built-in runtime config (like query modifiers)
-    values = _.omit( values, blacklist || [] );
+    values = omit( values, blacklist || [] );
 
     // Omit any params w/ undefined values
-    values = _.omit( values, function ( p ) {
-      if ( _.isUndefined( p ) ) return true;
+    values = omit( values, function ( p ) {
+      if ( isUndefined( p ) ) return true;
     } );
 
     // Omit jsonp callback param (but only if jsonp is enabled)
     var jsonpOpts = req.options.jsonp && !req.isSocket;
-    jsonpOpts = _.isObject( jsonpOpts ) ? jsonpOpts : {
+    jsonpOpts = isObject( jsonpOpts ) ? jsonpOpts : {
       callback: JSONP_CALLBACK_PARAM
     };
     if ( jsonpOpts ) {
-      values = _.omit( values, [ jsonpOpts.callback ] );
+      values = omit( values, [ jsonpOpts.callback ] );
     }
 
     return values;
@@ -392,7 +413,7 @@ module.exports = {
 // If JSON is falsey, return null
 // (this is so that it will be ignored if not specified)
 function tryToParseJSON( json ) {
-  if ( !_.isString( json ) ) return null;
+  if ( !isString( json ) ) return null;
   try {
     return JSON.parse( json );
   } catch ( e ) {
