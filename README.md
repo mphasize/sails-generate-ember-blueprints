@@ -19,8 +19,6 @@ The generators support different flavors for your API.
 
 **advanced**: If you need more powerful control over your API, you may consider upgrading to the "advanced" blueprints. These blueprints allow fine-grained control over how API responses handle sideloading a model's associations.
 
-And some future ideas...
-
 **embedded**: Unfortunately not yet available, but at some point in time we hope to support an embedded records flavor that can be consumed by Embers EmbeddedRecorsMixin. **Contributers please get in touch.** 
 
 **json-api**: Unfortunately not yet available, but it would also be great to support 100% [json api](http://jsonapi.org/) compatible responses.
@@ -117,9 +115,11 @@ In your Ember project: app/adapters/application.js
 
 ### Create with current user
 
-@todo: Find a new solution for this with the shallow blueprints...
+If you have logged in users and you always want to associate newly created records with the current user, take a look at the Policy described here: [beforeCreate policy](https://gist.github.com/mphasize/a69d86b9722ea464deca)
 
-/ If you have logged in users and you always want to associate newly created records with the current user, take a look at `blueprints/create.js` lines 25-31 and uncomment the code if it fits your needs. /
+### More access control
+
+If you need more control over inclusion and exclusion of records in the blueprints or you want to do other funny things, quite often a Policy can help you achieve this without a need for modifying the blueprints. Here's an example of a Policy that adds *beforeFind*, *beforeDestroy*, etc... hooks to a model: [beforeBlueprint policy](https://gist.github.com/mphasize/e9ed62f9d139d2152445)
 
 ### Sideloading records
 
