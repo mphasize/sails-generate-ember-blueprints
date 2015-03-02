@@ -10,7 +10,7 @@ var _ = require( 'lodash' ),
 var Ember = {
 	linkAssociations: function ( model, records ) {
 		if ( !Array.isArray( records ) ) records = [ records ];
-		var modelPlural = pluralize( Ember.emberizeModelIdentity( model ) );
+		var modelPlural = pluralize( model.identity );
 
 		return _.map( records, function ( record ) {
 			var links = {};
@@ -26,14 +26,6 @@ var Ember = {
 		} );
 	},
 
-	emberizeModelIdentity: function ( model ) {
-		return model.globalId.replace( /(?:^\w|[A-Z]|\b\w|\s+)/g,
-			function ( match, index ) {
-				if ( +match === 0 ) return ""; // or if (/\s+/.test(match)) for white spaces
-				return index === 0 ? match.toLowerCase() : match.toUpperCase();
-			} );
-	},
-
 	/**
 	 * Prepare records and populated associations to be consumed by Ember's DS.RESTAdapter
 	 *
@@ -47,7 +39,7 @@ var Ember = {
 		sideload = sideload || false;
 		var plural = Array.isArray( records ) ? true : false;
 
-		var emberModelIdentity = Ember.emberizeModelIdentity( model );
+		var emberModelIdentity = _.camelCase( model.globalId );
 		var modelPlural = pluralize( emberModelIdentity );
 		var documentIdentifier = plural ? modelPlural : emberModelIdentity;
 		var json = {};
@@ -88,7 +80,7 @@ var Ember = {
 					}, [] );
 					// @todo if assoc.include startsWith index: ... fill contents from selected column of join table
 					if ( assoc.include === "link" ) {
-						links[ assoc.alias ] = sails.config.blueprints.prefix + "/" + modelPlural + "/" + record.id + "/" + assoc.alias;
+						links[ assoc.alias ] = sails.config.blueprints.prefix + "/" + modelPlural.toLowerCase() + "/" + record.id + "/" + assoc.alias;
 						delete record[ assoc.alias ];
 					}
 					//record[ assoc.alias ] = _.pluck( record[ assoc.alias ], 'id' );
@@ -101,7 +93,7 @@ var Ember = {
 						json[ assocName ] = json[ assocName ].concat( record[ assoc.alias ] );
 					}
 					if ( assoc.include === "link" ) {
-						links[ assoc.alias ] = sails.config.blueprints.prefix + "/" + modelPlural + "/" + record.id + "/" + assoc.alias;
+						links[ assoc.alias ] = sails.config.blueprints.prefix + "/" + modelPlural.toLowerCase() + "/" + record.id + "/" + assoc.alias;
 						delete record[ assoc.alias ];
 					}
 					// if "index" we're already done...
