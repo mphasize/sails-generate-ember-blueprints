@@ -44,7 +44,7 @@ var Ember = {
 		var documentIdentifier = plural ? modelPlural : emberModelIdentity;
 		var json = {};
 
-		json[ documentIdentifier ] = plural ? [] : {};
+		json[ documentIdentifier ] = [];
 
 		if ( sideload ) {
 			// prepare for sideloading
@@ -111,7 +111,7 @@ var Ember = {
 				json[ documentIdentifier ] = json[ documentIdentifier ].concat( prepareOneRecord( record ) );
 			} );
 		} else {
-			json[ documentIdentifier ] = prepareOneRecord( records );
+			json[ documentIdentifier ] = [ prepareOneRecord( records ) ];
 		}
 
 		if ( sideload ) {
@@ -126,7 +126,13 @@ var Ember = {
 			// add *links* for relationships to sideloaded records
 			_.each( json, function ( array, key ) {
 				if ( key === documentIdentifier ) return;
-
+				if(array.length > 0) {
+					if(!_.isNumber(array[0]) && !_.isString(array[0])) { // this is probably an array of records
+						var model = sails.models[ pluralize(key, 1) ];
+						console.log("Sideloaded records model: ", model.identity);
+						Ember.linkAssociations(model, array);
+					}
+				}
 			} );
 		}
 
