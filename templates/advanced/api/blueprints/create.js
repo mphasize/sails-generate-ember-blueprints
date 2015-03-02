@@ -21,23 +21,9 @@ module.exports = function createRecord( req, res ) {
 	var Model = actionUtil.parseModel( req );
 	var data = actionUtil.parseValues( req, Model );
 
-	// UNCOMMENT THE FOLLOWING LINES FOR REQUIRING AUTHENTICATED USERS
-	/* if ( req.user && req.user.id ) {
-		console.log( 'Injecting req.user into blueprint create -> data.' );
-		data.user = req.user.id;
-	} else {
-		// exception for creating new users, otherwise any creative act needs a logged in user
-		if ( Model.identity !== 'user' ) return res.forbidden( "Create blueprint needs an authenticated user!" );
-	} */
-
 	// Look up the association configuration and determine how to populate the query
 	// @todo support request driven selection of includes/populate
 	var associations = actionUtil.getAssociationConfiguration( Model, "detail" );
-
-	/* query = actionUtil.accessControl( Model, "beforeCreate", {
-		query: query,
-		user: req.user
-	} ); */
 
 	// Create new instance of model using data from params
 	Model.create( data ).exec( function created( err, newInstance ) {

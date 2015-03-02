@@ -25,11 +25,6 @@ module.exports = function findOneRecord( req, res ) {
 
 	var query = Model.findOne( pk );
 
-	/* query = actionUtil.accessControl( Model, "beforeFindOne", {
-		query: query,
-		user: req.user
-	} ); */
-
 	// Look up the association configuration and determine how to populate the query
 	// @todo support request driven selection of includes/populate
 	var associations = actionUtil.getAssociationConfiguration( Model, "detail" );

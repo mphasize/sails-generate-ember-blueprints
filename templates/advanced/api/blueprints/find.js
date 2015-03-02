@@ -25,14 +25,9 @@ module.exports = function findRecords( req, res ) {
 
 	// Look up the model
 	var Model = actionUtil.parseModel( req );
+
 	// parse criteria from request
 	var criteria = actionUtil.parseCriteria( req );
-	// modify search criteria depending on the context (i.e. logged-in user?)
-	criteria = actionUtil.accessControl( Model, "beforeFind", {
-		criteria: criteria,
-		user: req.user
-	} );
-
 	var limit = actionUtil.parseLimit( req );
 
 	// Look up the association configuration and determine how to populate the query
