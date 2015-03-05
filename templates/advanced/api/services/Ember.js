@@ -41,7 +41,7 @@ var Ember = {
 
 		var emberModelIdentity = _.camelCase( model.globalId );
 		var modelPlural = pluralize( emberModelIdentity );
-		var documentIdentifier = plural ? modelPlural : emberModelIdentity;
+		var documentIdentifier = modelPlural; //plural ? modelPlural : emberModelIdentity;
 		var json = {};
 
 		json[ documentIdentifier ] = [];
@@ -93,14 +93,14 @@ var Ember = {
 				if ( assoc.type === "model" && record[ assoc.alias ] ) {
 					if ( sideload && assoc.include === "record" ) {
 						assocModel = sails.models[ assoc.model ];
-						record[ assoc.alias ] = Ember.linkAssociations( assocModel, record[ assoc.alias ] );
-
+						var linkedRecords = Ember.linkAssociations( assocModel, record[ assoc.alias ] );
 						json[ assocName ] = json[ assocName ].concat( record[ assoc.alias ] );
+						record[ assoc.alias ] = linkedRecords[ 0 ].id; // reduce embedded record to id
 					}
-					if ( assoc.include === "link" ) {
+					/* if ( assoc.include === "link" ) { // while it's possible, we should not really do this
 						links[ assoc.alias ] = sails.config.blueprints.prefix + "/" + modelPlural.toLowerCase() + "/" + record.id + "/" + assoc.alias;
 						delete record[ assoc.alias ];
-					}
+					} */
 					// if "index" we're already done...
 				}
 			} );
@@ -121,6 +121,7 @@ var Ember = {
 
 		if ( sideload ) {
 			// filter duplicates in sideloaded records
+			// @todo: prune empty association arrays
 			_.each( json, function ( array, key ) {
 				if ( key === documentIdentifier ) return;
 				json[ key ] = _.uniq( array, function ( record ) {
