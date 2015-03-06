@@ -39,42 +39,6 @@ module.exports = {
 	},
 
 	/**
-	 * AccessControl proxy function, expects a Waterline query object for before* hooks and an array of records for after* hooks.
-	 * @param  {Collection} model             Waterline collectio, from parseModel
-	 * @param  {String} action                blueprint or hook, e.g. beforeFind, afterFind, beforeCreate, afterCreate --> translates to accessControlBeforeFind, etc.
-	 * @param  {Object} options               Options: query {Query} Waterline query object for before* hooks, records: {Array} records for after* hooks, {Model} current user record
-	 * @return {Query|Array}                  returns the modified query (with altered criteria) for before* or the filtered/extended record array for after*.
-	 */
-	accessControl: function ( model, action, options, callback ) {
-		var primaryArgument = null;
-		var capitaliseFirstLetter = function ( string ) {
-			return string.charAt( 0 ).toUpperCase() + string.slice( 1 );
-		};
-
-		if ( action.indexOf( "before" ) === 0 ) {
-			if ( !options.criteria ) throw new Error( "accessControl before* hook needs option: criteria!" );
-			primaryArgument = options.criteria;
-		} else if ( action.indexOf( "after" ) === 0 ) { // turns out that access control after querying the database is a bad idea, because counting and pagination patterns are broken
-			if ( !options.records ) throw new Error( "accessControl after* hook needs option: records!" );
-			primaryArgument = options.records;
-		} else {
-			throw new Error( "accessControl action '" + action + "' doesn't fit into before/after pattern." );
-		}
-
-		action = capitaliseFirstLetter( action );
-
-		if ( typeof model[ "control" + action ] === "function" ) {
-			primaryArgument = model[ "control" + action ]( primaryArgument, options, callback );
-		} else {
-			console.log( "Dev: Model " + model.identity + " is missing control " + action + "!" );
-			if ( callback ) {
-				callback( null, primaryArgument );
-			}
-		}
-		return primaryArgument;
-	},
-
-	/**
 	 * helper function to populate a record with an array for indexes for associated models, running various Waterline queries on the join tables if neccessary ( defined as: include -> index )
 	 * @param  {Waterine Collection}   parentModel  [description]
 	 * @param  {Array|Integer}   ids          [description]
