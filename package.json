@@ -30,8 +30,7 @@
     "merge-defaults": "^0.2.1"
   },
   "devDependencies": {
-    "sails-generate": "*",
-    "fs-extra": "*"
+    "sails-generate": "*"
   },
   "sailsGenerator": {
     "type": "ember-blueprints",
