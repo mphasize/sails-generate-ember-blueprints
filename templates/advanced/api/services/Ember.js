@@ -124,6 +124,10 @@ var Ember = {
 			// @todo: prune empty association arrays
 			_.each( json, function ( array, key ) {
 				if ( key === documentIdentifier ) return;
+				if ( json[ key ].length === 0 ) {
+					delete json[ key ];
+					return;
+				}
 				json[ key ] = _.uniq( array, function ( record ) {
 					return record.id;
 				} );
