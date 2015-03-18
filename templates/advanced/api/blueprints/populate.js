@@ -85,7 +85,7 @@ module.exports = function expand( req, res ) {
 				documentIdentifier = relationIdentity = association.model;
 			} else {
 				relationIdentity = association.collection;
-				documentIdentifier = pluralize( association.collection );
+				documentIdentifier = association.alias;
 			}
 
 			var RelatedModel = req._sails.models[ relationIdentity ];
