@@ -18,6 +18,10 @@ var Ember = {
 				if ( assoc.type === "collection" ) {
 					links[ assoc.alias ] = sails.config.blueprints.prefix + "/" + modelPlural + "/" + record.id + "/" + assoc.alias;
 				}
+				if ( assoc.type === 'model') {
+					links[ assoc.alias ] = sails.config.blueprints.prefix + "/" + modelPlural + "/" + record.id + "/" + assoc.alias;
+					delete record[ assoc.alias ];
+				}
 			} );
 			if ( _.size( links ) > 0 ) {
 				record.links = links;
