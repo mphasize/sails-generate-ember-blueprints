@@ -3,7 +3,8 @@
  */
 var util = require( 'util' ),
 	actionUtil = require( './_util/actionUtil' ),
-	pluralize = require( 'pluralize' );
+	pluralize = require( 'pluralize' ),
+	_ = require('lodash');
 
 /**
  * Populate (or "expand") an association
@@ -82,15 +83,15 @@ module.exports = function expand( req, res ) {
 			var relationIdentity, documentIdentifier;
 
 			if ( association.type === "model" ) {
-				documentIdentifier = relationIdentity = association.model;
+				relationIdentity = association.model;
 			} else {
 				relationIdentity = association.collection;
-				documentIdentifier = pluralize( association.collection );
 			}
 
 			var RelatedModel = req._sails.models[ relationIdentity ];
 			if ( !RelatedModel ) throw new Error( util.format( 'Invalid route option, "model".\nI don\'t know about any models named: `%s`', relationIdentity ) );
 
+			var documentIdentifier = pluralize( _.camelCase( RelatedModel.globalId ));
 			var related = Ember.linkAssociations( RelatedModel, matchingRecord[ relation ] );
 
 			var json = {};
