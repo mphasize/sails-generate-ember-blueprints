@@ -79,10 +79,19 @@ var Ember = {
 							return filtered;
 						}, [] );
 					}
-					if ( assoc.include === "index" && associatedRecords[ assoc.alias ] ) record[ assoc.alias ] = _.reduce( associatedRecords[ assoc.alias ], function ( filtered, rec ) {
-						if ( rec[ emberModelIdentity ] === record.id ) filtered.push( rec.id );
-						return filtered;
-					}, [] );
+					if ( assoc.include === "index" && associatedRecords[ assoc.alias ] ) {
+						if ( assoc.through ) { // handle hasMany-Through associations
+							if ( assoc.include === "index" && associatedRecords[ assoc.alias ] ) record[ assoc.alias ] = _.reduce( associatedRecords[ assoc.alias ], function ( filtered, rec ) {
+								if ( rec[ emberModelIdentity ] === record.id ) filtered.push( rec[ assoc.collection ] );
+								return filtered;
+							}, [] );
+						} else {
+							record[ assoc.alias ] = _.reduce( associatedRecords[ assoc.alias ], function ( filtered, rec ) {
+								if ( rec[ emberModelIdentity ] === record.id ) filtered.push( rec.id );
+								return filtered;
+							}, [] );
+						}
+					}
 					// @todo if assoc.include startsWith index: ... fill contents from selected column of join table
 					if ( assoc.include === "link" ) {
 						links[ assoc.alias ] = sails.config.blueprints.prefix + "/" + modelPlural.toLowerCase() + "/" + record.id + "/" + assoc.alias;
