@@ -148,7 +148,6 @@ var Ember = {
 				if ( array.length > 0 ) {
 					if ( !_.isNumber( array[ 0 ] ) && !_.isString( array[ 0 ] ) ) { // this is probably an array of records
 						var model = sails.models[ pluralize( key, 1 ) ];
-						console.log( "Sideloaded records model: ", model.identity );
 						Ember.linkAssociations( model, array );
 					}
 				}
