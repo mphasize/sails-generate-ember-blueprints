@@ -98,6 +98,8 @@ The `record` setting will sideload the complete record.
 If the generator exits with
 `error: Something else already exists at ... ` you can try running it with the `--force` option (at your own risk!)
 
+Some records from relations/associations are missing? Sails has a default limit of 30 records per relation when populating. Try increasing the limit as a work-around until a pagination solution exists.
+
 ### Ember RESTAdapter
 
 If you're using [Ember CLI](//ember-cli.com), you only need to setup the RESTAdapter as the application adapter.
