@@ -174,7 +174,7 @@ As a **quick example**, if you create a `post` model under the namespace `api/v1
 
 ### Blueprints: Support pagination metadata
 
-- the **advanced** blueprints support pagination meta data
+- the **advanced** blueprints support pagination meta data on direct requests. However, sideloaded records from relationships are currently not paginated.
 
 ### Testing: Make the blueprints testable
 
