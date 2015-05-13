@@ -39,7 +39,7 @@ var Ember = {
 		sideload = sideload || false;
 		var plural = Array.isArray( records ) ? true : false;
 
-		var emberModelIdentity = _.camelCase( model.globalId );
+		var emberModelIdentity = model.globalId;
 		var modelPlural = pluralize( emberModelIdentity );
 		var documentIdentifier = modelPlural; //plural ? modelPlural : emberModelIdentity;
 		var json = {};
@@ -51,10 +51,11 @@ var Ember = {
 			_.each( associations, function ( assoc ) {
 				// only sideload, when the full records are to be included, more info on setup here https://github.com/Incom/incom-api/wiki/Models:-Defining-associations
 				if ( assoc.include === "record" ) {
+          var assocModelIdentifier = pluralize(sails.models[assoc.collection || assoc.model].globalId);
 					var assocName = assoc.type === "collection" ? pluralize( assoc.collection ) : pluralize( assoc.model );
 					// initialize jsoning object
 					if ( !json.hasOwnProperty( assoc.alias ) ) {
-						json[ assocName ] = [];
+						json[ assocModelIdentifier ] = [];
 					}
 				}
 			} );
@@ -66,13 +67,14 @@ var Ember = {
 			var links = {};
 
 			_.each( associations, function ( assoc ) {
+        var assocModelIdentifier = pluralize(sails.models[assoc.collection || assoc.model].globalId);
 				var assocName = assoc.type === "collection" ? pluralize( assoc.collection ) : pluralize( assoc.model );
 				var assocModel;
 				if ( assoc.type === "collection" ) {
 					assocModel = sails.models[ assoc.collection ];
 					if ( sideload && assoc.include === "record" && record[ assoc.alias ] && record[ assoc.alias ].length > 0 ) {
 						// sideload association records with links for 3rd level associations
-						json[ assocName ] = json[ assocName ].concat( Ember.linkAssociations( assocModel, record[ assoc.alias ] ) );
+						json[ assocModelIdentifier ] = json[ assocModelIdentifier ].concat( Ember.linkAssociations( assocModel, record[ assoc.alias ] ) );
 						// reduce association on primary record to an array of IDs
 						record[ assoc.alias ] = _.reduce( record[ assoc.alias ], function ( filtered, rec ) {
 							filtered.push( rec.id );
@@ -103,7 +105,7 @@ var Ember = {
 					if ( sideload && assoc.include === "record" ) {
 						assocModel = sails.models[ assoc.model ];
 						var linkedRecords = Ember.linkAssociations( assocModel, record[ assoc.alias ] );
-						json[ assocName ] = json[ assocName ].concat( record[ assoc.alias ] );
+						json[ assocModelIdentifier ] = json[ assocModelIdentifier ].concat( record[ assoc.alias ] );
 						record[ assoc.alias ] = linkedRecords[ 0 ].id; // reduce embedded record to id
 					}
 					/* if ( assoc.include === "link" ) { // while it's possible, we should not really do this
@@ -144,10 +146,11 @@ var Ember = {
 
 			// add *links* for relationships to sideloaded records
 			_.each( json, function ( array, key ) {
+        console.log(key, pluralize(key, 1));
 				if ( key === documentIdentifier ) return;
 				if ( array.length > 0 ) {
 					if ( !_.isNumber( array[ 0 ] ) && !_.isString( array[ 0 ] ) ) { // this is probably an array of records
-						var model = sails.models[ pluralize( key, 1 ) ];
+						var model = sails.models[ pluralize( key, 1 ).toLowerCase() ];
 						Ember.linkAssociations( model, array );
 					}
 				}
