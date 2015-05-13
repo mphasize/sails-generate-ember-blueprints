@@ -51,7 +51,7 @@ var Ember = {
 			_.each( associations, function ( assoc ) {
 				// only sideload, when the full records are to be included, more info on setup here https://github.com/Incom/incom-api/wiki/Models:-Defining-associations
 				if ( assoc.include === "record" ) {
-          var assocModelIdentifier = pluralize(sails.models[assoc.collection || assoc.model].globalId);
+					var assocModelIdentifier = pluralize(sails.models[assoc.collection || assoc.model].globalId);
 					var assocName = assoc.type === "collection" ? pluralize( assoc.collection ) : pluralize( assoc.model );
 					// initialize jsoning object
 					if ( !json.hasOwnProperty( assoc.alias ) ) {
@@ -67,7 +67,7 @@ var Ember = {
 			var links = {};
 
 			_.each( associations, function ( assoc ) {
-        var assocModelIdentifier = pluralize(sails.models[assoc.collection || assoc.model].globalId);
+				var assocModelIdentifier = pluralize(sails.models[assoc.collection || assoc.model].globalId);
 				var assocName = assoc.type === "collection" ? pluralize( assoc.collection ) : pluralize( assoc.model );
 				var assocModel;
 				if ( assoc.type === "collection" ) {
@@ -146,7 +146,6 @@ var Ember = {
 
 			// add *links* for relationships to sideloaded records
 			_.each( json, function ( array, key ) {
-        console.log(key, pluralize(key, 1));
 				if ( key === documentIdentifier ) return;
 				if ( array.length > 0 ) {
 					if ( !_.isNumber( array[ 0 ] ) && !_.isString( array[ 0 ] ) ) { // this is probably an array of records
