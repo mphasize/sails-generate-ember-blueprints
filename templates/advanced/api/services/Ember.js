@@ -52,7 +52,6 @@ var Ember = {
 				// only sideload, when the full records are to be included, more info on setup here https://github.com/Incom/incom-api/wiki/Models:-Defining-associations
 				if ( assoc.include === "record" ) {
 					var assocModelIdentifier = pluralize( _.kebabCase( sails.models[assoc.collection || assoc.model].globalId ) );
-					var assocName = assoc.type === "collection" ? pluralize( assoc.collection ) : pluralize( assoc.model );
 					// initialize jsoning object
 					if ( !json.hasOwnProperty( assoc.alias ) ) {
 						json[ assocModelIdentifier ] = [];
@@ -68,7 +67,6 @@ var Ember = {
 
 			_.each( associations, function ( assoc ) {
 				var assocModelIdentifier = pluralize( _.kebabCase( sails.models[assoc.collection || assoc.model].globalId ) );
-				var assocName = assoc.type === "collection" ? pluralize( assoc.collection ) : pluralize( assoc.model );
 				var assocModel;
 				if ( assoc.type === "collection" ) {
 					assocModel = sails.models[ assoc.collection ];
@@ -84,12 +82,12 @@ var Ember = {
 					if ( assoc.include === "index" && associatedRecords[ assoc.alias ] ) {
 						if ( assoc.through ) { // handle hasMany-Through associations
 							if ( assoc.include === "index" && associatedRecords[ assoc.alias ] ) record[ assoc.alias ] = _.reduce( associatedRecords[ assoc.alias ], function ( filtered, rec ) {
-								if ( rec[ emberModelIdentity ] === record.id ) filtered.push( rec[ assoc.collection ] );
+								if ( rec [ assoc.via ] === record.id ) filtered.push( rec[ assoc.collection ] );
 								return filtered;
 							}, [] );
 						} else {
 							record[ assoc.alias ] = _.reduce( associatedRecords[ assoc.alias ], function ( filtered, rec ) {
-								if ( rec[ emberModelIdentity ] === record.id ) filtered.push( rec.id );
+								if ( rec [ assoc.via ] === record.id ) filtered.push( rec.id );
 								return filtered;
 							}, [] );
 						}
