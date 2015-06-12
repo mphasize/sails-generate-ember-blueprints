@@ -91,7 +91,7 @@ module.exports = function expand( req, res ) {
 			var RelatedModel = req._sails.models[ relationIdentity ];
 			if ( !RelatedModel ) throw new Error( util.format( 'Invalid route option, "model".\nI don\'t know about any models named: `%s`', relationIdentity ) );
 
-			var documentIdentifier = pluralize( _.camelCase( RelatedModel.globalId ));
+			documentIdentifier = pluralize( _.kebabCase( RelatedModel.globalId ) );
 			var related = Ember.linkAssociations( RelatedModel, matchingRecord[ relation ] );
 
 			var json = {};

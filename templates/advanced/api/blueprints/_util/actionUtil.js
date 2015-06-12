@@ -311,7 +311,7 @@ module.exports = {
 		}
 
 		// Get values using the model identity as resource identifier
-		var values = req.param( _.camelCase( model.globalId ) ) || {};
+		var values = req.param( _.kebabCase( model.globalId ) ) || {};
 
 		// Omit built-in runtime config (like query modifiers)
 		values = _.omit( values, blacklist || [] );
