@@ -70,6 +70,11 @@ var Ember = {
 				var assocModel;
 				if ( assoc.type === "collection" ) {
 					assocModel = sails.models[ assoc.collection ];
+					var via = _.kebabCase(emberModelIdentity);
+					// check if inverse is using a different name
+					if(via !== pluralize(assoc.via,1)) {
+						via = pluralize(assoc.via, 1);
+					}
 					if ( sideload && assoc.include === "record" && record[ assoc.alias ] && record[ assoc.alias ].length > 0 ) {
 						// sideload association records with links for 3rd level associations
 						json[ assocModelIdentifier ] = json[ assocModelIdentifier ].concat( Ember.linkAssociations( assocModel, record[ assoc.alias ] ) );
@@ -82,12 +87,12 @@ var Ember = {
 					if ( assoc.include === "index" && associatedRecords[ assoc.alias ] ) {
 						if ( assoc.through ) { // handle hasMany-Through associations
 							if ( assoc.include === "index" && associatedRecords[ assoc.alias ] ) record[ assoc.alias ] = _.reduce( associatedRecords[ assoc.alias ], function ( filtered, rec ) {
-								if ( rec [ assoc.via ] === record.id ) filtered.push( rec[ assoc.collection ] );
+								if ( rec [ via ] === record.id ) filtered.push( rec[ assoc.collection ] );
 								return filtered;
 							}, [] );
 						} else {
 							record[ assoc.alias ] = _.reduce( associatedRecords[ assoc.alias ], function ( filtered, rec ) {
-								if ( rec [ assoc.via ] === record.id ) filtered.push( rec.id );
+								if ( rec [ via ] === record.id ) filtered.push( rec.id );
 								return filtered;
 							}, [] );
 						}
