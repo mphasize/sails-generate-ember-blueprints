@@ -93,12 +93,12 @@ var Ember = {
 					if ( assoc.include === "index" && associatedRecords[ assoc.alias ] ) {
 						if ( assoc.through ) { // handle hasMany-Through associations
 							if ( assoc.include === "index" && associatedRecords[ assoc.alias ] ) record[ assoc.alias ] = _.reduce( associatedRecords[ assoc.alias ], function ( filtered, rec ) {
-								if ( rec [ via ] === record.id ) filtered.push( rec[ assoc.collection ] );
+								if ( rec [ via ] === record[pk] ) filtered.push( rec[ assoc.collection ] );
 								return filtered;
 							}, [] );
 						} else {
 							record[ assoc.alias ] = _.reduce( associatedRecords[ assoc.alias ], function ( filtered, rec ) {
-								if ( rec [ via ] === record.id ) filtered.push( rec.id );
+								if ( rec [ via ] === record[pk] ) filtered.push( rec[assocPk] );
 								return filtered;
 							}, [] );
 						}
