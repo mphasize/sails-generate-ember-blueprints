@@ -49,7 +49,7 @@ module.exports = function createRecord( req, res ) {
 		Q.exec( function foundAgain( err, populatedRecord ) {
 			if ( err ) return res.serverError( err );
 
-			actionUtil.populateIndexes( Model, populatedRecord.id, associations, function ( err, associated ) {
+			actionUtil.populateIndexes( Model, newInstance[ Model.primaryKey ], associations, function ( err, associated ) {
 
 				if ( err ) return res.serverError( err );
 				if ( !populatedRecord ) return res.serverError( 'Could not find record after updating!' );
