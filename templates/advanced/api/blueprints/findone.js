@@ -34,7 +34,7 @@ module.exports = function findOneRecord( req, res ) {
 		if ( err ) return res.serverError( err );
 		if ( !matchingRecord ) return res.notFound( 'No record found with the specified `id`.' );
 
-		actionUtil.populateIndexes( Model, matchingRecord.id, associations, function ( err, associated ) {
+		actionUtil.populateIndexes( Model, matchingRecord[Model.primaryKey], associations, function ( err, associated ) {
 
 			if ( sails.hooks.pubsub && req.isSocket ) {
 				Model.subscribe( req, matchingRecord );
