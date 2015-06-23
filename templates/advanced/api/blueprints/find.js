@@ -56,7 +56,7 @@ module.exports = function findRecords( req, res ) {
 			if ( err ) return res.serverError( err );
 
 			var matchingRecords = results.records;
-			var ids = _.pluck( matchingRecords, 'id' );
+			var ids = _.pluck( matchingRecords, Model.primaryKey );
 
 			actionUtil.populateIndexes( Model, ids, associations, function ( err, associated ) {
 
