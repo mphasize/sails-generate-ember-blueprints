@@ -113,9 +113,10 @@ var Ember = {
 				if ( assoc.type === "model" && record[ assoc.alias ] ) {
 					if ( sideload && assoc.include === "record" ) {
 						assocModel = sails.models[ assoc.model ];
+						assocPk = assocModel.primaryKey;
 						var linkedRecords = Ember.linkAssociations( assocModel, record[ assoc.alias ] );
 						json[ assocModelIdentifier ] = json[ assocModelIdentifier ].concat( record[ assoc.alias ] );
-						record[ assoc.alias ] = linkedRecords[ 0 ].id; // reduce embedded record to id
+						record[ assoc.alias ] = linkedRecords[ 0 ][assocPk]; // reduce embedded record to id
 					}
 					/* if ( assoc.include === "link" ) { // while it's possible, we should not really do this
 						links[ assoc.alias ] = sails.config.blueprints.prefix + "/" + modelPlural.toLowerCase() + "/" + record.id + "/" + assoc.alias;
