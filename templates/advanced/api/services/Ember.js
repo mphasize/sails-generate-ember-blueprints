@@ -11,12 +11,12 @@ var Ember = {
 	linkAssociations: function ( model, records ) {
 		if ( !Array.isArray( records ) ) records = [ records ];
 		var modelPlural = pluralize( model.identity );
-
+		var pk = model.primaryKey
 		return _.map( records, function ( record ) {
 			var links = {};
 			_.each( model.associations, function ( assoc ) {
 				if ( assoc.type === "collection" ) {
-					links[ assoc.alias ] = sails.config.blueprints.prefix + "/" + modelPlural + "/" + record.id + "/" + assoc.alias;
+					links[ assoc.alias ] = sails.config.blueprints.prefix + "/" + modelPlural + "/" + record[pk] + "/" + assoc.alias;
 				}
 			} );
 			if ( _.size( links ) > 0 ) {
@@ -43,6 +43,7 @@ var Ember = {
 		var modelPlural = pluralize( emberModelIdentity );
 		var documentIdentifier = _.kebabCase( modelPlural ); //plural ? modelPlural : emberModelIdentity;
 		var json = {};
+		var pk = model.primaryKey
 
 		json[ documentIdentifier ] = [];
 
@@ -99,7 +100,7 @@ var Ember = {
 					}
 					// @todo if assoc.include startsWith index: ... fill contents from selected column of join table
 					if ( assoc.include === "link" ) {
-						links[ assoc.alias ] = sails.config.blueprints.prefix + "/" + modelPlural.toLowerCase() + "/" + record.id + "/" + assoc.alias;
+						links[ assoc.alias ] = sails.config.blueprints.prefix + "/" + modelPlural.toLowerCase() + "/" + record[pk] + "/" + assoc.alias;
 						delete record[ assoc.alias ];
 					}
 					//record[ assoc.alias ] = _.pluck( record[ assoc.alias ], 'id' );
