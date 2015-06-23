@@ -43,7 +43,8 @@ var Ember = {
 		var modelPlural = pluralize( emberModelIdentity );
 		var documentIdentifier = _.kebabCase( modelPlural ); //plural ? modelPlural : emberModelIdentity;
 		var json = {};
-		var pk = model.primaryKey
+		var pk = model.primaryKey;
+		var assocPks = {};
 
 		json[ documentIdentifier ] = [];
 
@@ -69,8 +70,12 @@ var Ember = {
 			_.each( associations, function ( assoc ) {
 				var assocModelIdentifier = pluralize( _.kebabCase( sails.models[assoc.collection || assoc.model].globalId ) );
 				var assocModel;
+				var assocPk;
+
 				if ( assoc.type === "collection" ) {
 					assocModel = sails.models[ assoc.collection ];
+					assocPk = assocModel.primaryKey
+					assocPks[assocModelIdentifier] = assocPk;
 					var via = _.kebabCase(emberModelIdentity);
 					// check if inverse is using a different name
 					if(via !== pluralize(assoc.via,1)) {
@@ -81,7 +86,7 @@ var Ember = {
 						json[ assocModelIdentifier ] = json[ assocModelIdentifier ].concat( Ember.linkAssociations( assocModel, record[ assoc.alias ] ) );
 						// reduce association on primary record to an array of IDs
 						record[ assoc.alias ] = _.reduce( record[ assoc.alias ], function ( filtered, rec ) {
-							filtered.push( rec.id );
+							filtered.push( rec[assocPk] );
 							return filtered;
 						}, [] );
 					}
@@ -135,6 +140,7 @@ var Ember = {
 		}
 
 		if ( sideload ) {
+			var pk;
 			// filter duplicates in sideloaded records
 			// @todo: prune empty association arrays
 			_.each( json, function ( array, key ) {
@@ -143,8 +149,9 @@ var Ember = {
 					delete json[ key ];
 					return;
 				}
+				pk = assocPks[key];
 				json[ key ] = _.uniq( array, function ( record ) {
-					return record.id;
+					return record[pk];
 				} );
 			} );
 
