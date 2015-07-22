@@ -13,6 +13,7 @@ var Ember = {
 		var modelPlural = pluralize( model.identity );
 		var pk = model.primaryKey
 		var prefix = sails.config.blueprints.restPrefix || sails.config.blueprints.prefix;
+		var prefix = sails.config.blueprints.restPrefix || sails.config.blueprints.prefix;
 		return _.map( records, function ( record ) {
 			var links = {};
 			_.each( model.associations, function ( assoc ) {
@@ -46,6 +47,7 @@ var Ember = {
 		var json = {};
 		var pk = model.primaryKey;
 		var assocPks = {};
+		var prefix = sails.config.blueprints.restPrefix || sails.config.blueprints.prefix;
 		var prefix = sails.config.blueprints.restPrefix || sails.config.blueprints.prefix;
 
 		json[ documentIdentifier ] = [];
