@@ -14,11 +14,13 @@ module.exports = {
     if ( !Array.isArray( records ) ) records = [ records ];
     var modelPlural = pluralize( model.identity );
     var pk = model.primaryKey
+
+    var prefix = sails.config.blueprints.restPrefix || sails.config.blueprints.prefix;
     return map( records, function ( record ) {
       var links = {};
       forEach( model.associations, function ( assoc ) {
         if ( assoc.type == "collection" ) {
-          links[ assoc.alias ] = sails.config.blueprints.prefix + "/" + modelPlural + "/" + record[pk] + "/" + assoc.alias;
+          links[ assoc.alias ] = prefix + "/" + modelPlural + "/" + record[pk] + "/" + assoc.alias;
         }
       } );
       if ( size( links ) > 0 ) {
