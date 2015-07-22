@@ -92,6 +92,23 @@ The `index` setting will generate an array of ID references for Ember Data, so b
 
 The `record` setting will sideload the complete record.
 
+**Custom Responses**
+The blueprints normally reply with the `ok` response from `api/responses/ok.js`. The advanced blueprints allow you to set a custom response in `config/blueprints` for *find, findOne and populate* blueprints.
+
+Example:
+Assuming a file named `api/responses/myRes.js` exists.
+
+	// config/blueprints.js 
+	module.exports.blueprints = {
+
+		findResponse: 'myRes',
+		findOneResponse: 'myRes',
+		populateResponse: 'myRes',
+	
+		// ....
+	}
+
+
 
 ### Troubleshooting
 
