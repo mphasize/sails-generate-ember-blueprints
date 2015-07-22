@@ -81,8 +81,9 @@ module.exports = function findRecords( req, res ) {
 				emberizedJSON.meta = {
 					total: results.count
 				};
-				res.ok( emberizedJSON );
 
+				var customResponse = sails.config.blueprints.findResponse || 'ok';
+				res[customResponse]( emberizedJSON );
 			} );
 		} );
 
