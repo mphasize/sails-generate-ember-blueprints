@@ -11,12 +11,14 @@ var Ember = {
 	linkAssociations: function ( model, records ) {
 		if ( !Array.isArray( records ) ) records = [ records ];
 		var modelPlural = pluralize( model.identity );
+		var pk = model.primaryKey
+		var prefix = sails.config.blueprints.restPrefix || sails.config.blueprints.prefix;
 		var prefix = sails.config.blueprints.restPrefix || sails.config.blueprints.prefix;
 		return _.map( records, function ( record ) {
 			var links = {};
 			_.each( model.associations, function ( assoc ) {
 				if ( assoc.type === "collection" ) {
-					links[ assoc.alias ] = prefix + "/" + modelPlural + "/" + record.id + "/" + assoc.alias;
+					links[ assoc.alias ] = prefix + "/" + modelPlural + "/" + record[pk] + "/" + assoc.alias;
 				}
 			} );
 			if ( _.size( links ) > 0 ) {
@@ -43,6 +45,9 @@ var Ember = {
 		var modelPlural = pluralize( emberModelIdentity );
 		var documentIdentifier = _.kebabCase( modelPlural ); //plural ? modelPlural : emberModelIdentity;
 		var json = {};
+		var pk = model.primaryKey;
+		var assocPks = {};
+		var prefix = sails.config.blueprints.restPrefix || sails.config.blueprints.prefix;
 		var prefix = sails.config.blueprints.restPrefix || sails.config.blueprints.prefix;
 
 		json[ documentIdentifier ] = [];
@@ -69,8 +74,12 @@ var Ember = {
 			_.each( associations, function ( assoc ) {
 				var assocModelIdentifier = pluralize( _.kebabCase( sails.models[assoc.collection || assoc.model].globalId ) );
 				var assocModel;
+				var assocPk;
+
 				if ( assoc.type === "collection" ) {
 					assocModel = sails.models[ assoc.collection ];
+					assocPk = assocModel.primaryKey
+					assocPks[assocModelIdentifier] = assocPk;
 					var via = _.kebabCase(emberModelIdentity);
 					// check if inverse is using a different name
 					if(via !== pluralize(assoc.via,1)) {
@@ -81,26 +90,26 @@ var Ember = {
 						json[ assocModelIdentifier ] = json[ assocModelIdentifier ].concat( Ember.linkAssociations( assocModel, record[ assoc.alias ] ) );
 						// reduce association on primary record to an array of IDs
 						record[ assoc.alias ] = _.reduce( record[ assoc.alias ], function ( filtered, rec ) {
-							filtered.push( rec.id );
+							filtered.push( rec[assocPk] );
 							return filtered;
 						}, [] );
 					}
 					if ( assoc.include === "index" && associatedRecords[ assoc.alias ] ) {
 						if ( assoc.through ) { // handle hasMany-Through associations
 							if ( assoc.include === "index" && associatedRecords[ assoc.alias ] ) record[ assoc.alias ] = _.reduce( associatedRecords[ assoc.alias ], function ( filtered, rec ) {
-								if ( rec [ via ] === record.id ) filtered.push( rec[ assoc.collection ] );
+								if ( rec [ via ] === record[pk] ) filtered.push( rec[ assoc.collection ] );
 								return filtered;
 							}, [] );
 						} else {
 							record[ assoc.alias ] = _.reduce( associatedRecords[ assoc.alias ], function ( filtered, rec ) {
-								if ( rec [ via ] === record.id ) filtered.push( rec.id );
+								if ( rec [ via ] === record[pk] ) filtered.push( rec[assocPk] );
 								return filtered;
 							}, [] );
 						}
 					}
 					// @todo if assoc.include startsWith index: ... fill contents from selected column of join table
 					if ( assoc.include === "link" ) {
-						links[ assoc.alias ] = prefix + "/" + modelPlural.toLowerCase() + "/" + record.id + "/" + assoc.alias;
+						links[ assoc.alias ] = prefix + "/" + modelPlural.toLowerCase() + "/" + record[pk] + "/" + assoc.alias;
 						delete record[ assoc.alias ];
 					}
 					//record[ assoc.alias ] = _.pluck( record[ assoc.alias ], 'id' );
@@ -108,9 +117,10 @@ var Ember = {
 				if ( assoc.type === "model" && record[ assoc.alias ] ) {
 					if ( sideload && assoc.include === "record" ) {
 						assocModel = sails.models[ assoc.model ];
+						assocPk = assocModel.primaryKey;
 						var linkedRecords = Ember.linkAssociations( assocModel, record[ assoc.alias ] );
 						json[ assocModelIdentifier ] = json[ assocModelIdentifier ].concat( record[ assoc.alias ] );
-						record[ assoc.alias ] = linkedRecords[ 0 ].id; // reduce embedded record to id
+						record[ assoc.alias ] = linkedRecords[ 0 ][assocPk]; // reduce embedded record to id
 					}
 					/* if ( assoc.include === "link" ) { // while it's possible, we should not really do this
 						links[ assoc.alias ] = sails.config.blueprints.prefix + "/" + modelPlural.toLowerCase() + "/" + record.id + "/" + assoc.alias;
@@ -135,6 +145,7 @@ var Ember = {
 		}
 
 		if ( sideload ) {
+			var pk;
 			// filter duplicates in sideloaded records
 			// @todo: prune empty association arrays
 			_.each( json, function ( array, key ) {
@@ -143,8 +154,9 @@ var Ember = {
 					delete json[ key ];
 					return;
 				}
+				pk = assocPks[key];
 				json[ key ] = _.uniq( array, function ( record ) {
-					return record.id;
+					return record[pk];
 				} );
 			} );
 

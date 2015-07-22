@@ -82,7 +82,7 @@ module.exports = function updateOneRecord( req, res ) {
 				if ( err ) return res.serverError( err );
 				if ( !populatedRecord ) return res.serverError( 'Could not find record after updating!' );
 
-				actionUtil.populateIndexes( Model, matchingRecord.id, associations, function ( err, associated ) {
+				actionUtil.populateIndexes( Model, updatedRecord[ Model.primaryKey ], associations, function ( err, associated ) {
 
 					res.ok( Ember.buildResponse( Model, populatedRecord, associations, true, associated ) );
 				} );
