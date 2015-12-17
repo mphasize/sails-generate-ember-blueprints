@@ -82,7 +82,7 @@ var Ember = {
 					assocPks[assocModelIdentifier] = assocPk;
 					var via = _.kebabCase(emberModelIdentity);
 					// check if inverse is using a different name
-					if(via !== pluralize(assoc.via,1)) {
+					if(assoc.via && via !== pluralize(assoc.via,1)) {
 						via = pluralize(assoc.via, 1);
 					}
 					if ( sideload && assoc.include === "record" && record[ assoc.alias ] && record[ assoc.alias ].length > 0 ) {
