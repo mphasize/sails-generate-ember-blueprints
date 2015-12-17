@@ -72,7 +72,7 @@ var Ember = {
           // Support promise from toJSON()
           Promise.all([record.toJSON()]).then(function (recordJSON) {
             // get rid of the record's prototype ( otherwise the .toJSON called in res.send would re-insert embedded records)
-            record = _.create( {}, recordJSON );
+            record = _.create( {}, recordJSON[0] );
             var links = {};
 
             _.each( associations, function ( assoc ) {

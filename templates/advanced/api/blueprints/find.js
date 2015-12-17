@@ -76,14 +76,13 @@ module.exports = function findRecords( req, res ) {
 					} );
 				}
 
-				var emberizedJSON = Ember.buildResponse( Model, results.records, associations, true, associated );
-
-				emberizedJSON.meta = {
-					total: results.count
-				};
-				res.ok( emberizedJSON );
-
-			} );
+				Ember.buildResponse(Model, results.records, associations, true, associated).then(function (emberizedJSON) {
+          emberizedJSON.meta = {
+            total: results.count
+          };
+          res.ok( emberizedJSON );
+        });
+			});
 		} );
 
 	/*async.reduce( associations, {}, function ( associatedRecords, association, next ) {
