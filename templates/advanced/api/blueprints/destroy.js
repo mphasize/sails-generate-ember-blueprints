@@ -3,6 +3,7 @@
  */
 var util = require( 'util' ),
 	actionUtil = require( './_util/actionUtil' );
+var _ = require('lodash');
 
 /**
  * Destroy One Record
@@ -39,17 +40,34 @@ module.exports = function destroyOneRecord( req, res ) {
 		Model.destroy( pk ).exec( function destroyedRecord( err ) {
 			if ( err ) return res.negotiate( err );
 
-			if ( sails.hooks.pubsub ) {
-				Model.publishDestroy( pk, !sails.config.blueprints.mirror && req, {
-					previous: record
-				} );
-				if ( req.isSocket ) {
-					Model.unsubscribe( req, record );
-					Model.retire( record );
-				}
-			}
+			//Now remove associations
+			// { alias: 'owner', type: 'model', model: 'user' },
+			var promises = [];
+			_.reduce(sails.models, function(result, value, key) {
+				var associations = _.filter(value.associations, {type : 'model',model : Model.adapter.identity});
+				_.each(associations, function(v) {
+					var criteria = {}, update = {};
+					criteria[v.alias] = pk;
+					update[v.alias] = null;	
+					promises.push(sails.models[value.adapter.identity].update(criteria, update));
+				});
+			}, {});
 
-			// @todo --- if neccessary, destroy related records
+
+			Promise.all(promises).catch().then(function () {
+			
+				if ( sails.hooks.pubsub ) {
+					Model.publishDestroy( pk, !sails.config.blueprints.mirror && req, {
+						previous: record
+					} );
+					if ( req.isSocket ) {
+						Model.unsubscribe( req, record );
+						Model.retire( record );
+					}
+				}
+
+				return res.ok( null ); // Ember Data REST Adapter expects NULL after DELETE
+			});
 
 			return res.ok( null ); // Ember Data REST Adapter expects NULL after DELETE
 		} );
