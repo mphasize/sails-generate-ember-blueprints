@@ -1,4 +1,11 @@
 var request = require('supertest');
+var JSONAPIValidator = require('jsonapi-validator').Validator;
+
+validateJSONapi = function(res) {
+  var validator = new JSONAPIValidator();
+
+  validator.validate(res.body);
+}
 
 describe('UserController', function() {
 
@@ -7,6 +14,7 @@ describe('UserController', function() {
       request(sails.hooks.http.app)
         .get('/users')
         .expect(200)
+        .expect(validateJSONapi)
         .expect({
           data: []
         })
