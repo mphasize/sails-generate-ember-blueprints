@@ -36,7 +36,7 @@ module.exports = function findRecords(req, res) {
       delete record.id
 
       data.data.push({
-        id: id,
+        id: id.toString(),
         type: pluralize(req.options.model || req.options.controller),
         attributes: record
       });

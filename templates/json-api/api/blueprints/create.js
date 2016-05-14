@@ -32,7 +32,7 @@ module.exports = function createRecord(req, res) {
         res.status(201);
         return res.json({
           data: {
-            id: id,
+            id: id.toString(),
             type: pluralize(req.options.model || req.options.controller),
             attributes: newRecord
           }
