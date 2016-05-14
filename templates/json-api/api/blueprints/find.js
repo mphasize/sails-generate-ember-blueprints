@@ -2,7 +2,8 @@
  * Module dependencies
  */
 var util = require( 'util' ),
-  actionUtil = require( './_util/actionUtil' );
+  actionUtil = require( './_util/actionUtil' ),
+  pluralize = require('pluralize');
 
 /**
  * Find Records
@@ -26,8 +27,21 @@ module.exports = function findRecords(req, res) {
 
     if (err) return res.serverError(err);
 
-    return res.ok({
-      data: matchingRecords
-    });
+    var data = {
+      data: []
+    };
+
+    matchingRecords.forEach((record) => {
+      var id = record.id;
+      delete record.id
+
+      data.data.push({
+        id: id,
+        type: pluralize(req.options.model || req.options.controller),
+        attributes: record
+      });
+    })
+
+    return res.ok(data);
   });
 };
