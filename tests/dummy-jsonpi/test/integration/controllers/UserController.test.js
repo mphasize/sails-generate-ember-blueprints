@@ -22,4 +22,31 @@ describe('UserController', function() {
     });
   });
 
+  describe('POST /users', function() {
+
+    it('Should return created user', function (done) {
+
+      var userToCreate = {
+        'data': {
+          'attributes': {
+            'email': 'test@sanestack.com',
+            'first-name':'Test',
+            'last-name':'SaneStack'
+          },
+          'type':'users'
+        }
+      };
+
+      userCreated = userToCreate;
+      userCreated.data.id = 1;
+
+      request(sails.hooks.http.app)
+        .post('/users')
+        .send(userToCreate)
+        .expect(201)
+        .expect(validateJSONapi)
+        .expect(userCreated)
+        .end(done)
+    });
+  });
 });
