@@ -127,4 +127,25 @@ describe('UserController', function() {
         .end(done)
     });
   });
+
+  describe('Find one user GET /users/1', function() {
+    it('Should return created user', function (done) {
+      request(sails.hooks.http.app)
+        .get('/users/1')
+        .expect(200)
+        .expect(validateJSONapi)
+        .expect({
+          'data': {
+            'id': 1,
+            'type': 'users',
+            'attributes': {
+              'email': 'test@sanestack.com',
+              'first-name':'Test',
+              'last-name':'SaneStack'
+            }
+          }
+        })
+        .end(done)
+    });
+  });
 });
