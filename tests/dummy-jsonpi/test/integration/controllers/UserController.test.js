@@ -5,9 +5,10 @@ describe('UserController', function() {
   describe('GET /users', function() {
     it('Should return empty array', function (done) {
       request(sails.hooks.http.app)
-        .post('/users')
-        .expect(404)
+        .get('/users')
+        .expect(200)
         .expect({
+          data: []
         })
         .end(done)
     });
