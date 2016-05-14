@@ -29,8 +29,12 @@
   "main": "app.js",
   "repository": {
     "type": "git",
-    "url": "git://github.com/sane/sails-hook-jsonapi.git"
+    "url": "git://github.com/sane/sails-hook-jsonapi"
   },
   "author": "Olivier Berthonneau <berthonneau.olivier@gmail.com>",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "supertest": "^1.2.0",
+    "mocha": "2.4.5"
+  }
 }
