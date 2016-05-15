@@ -34,7 +34,9 @@ module.exports.routes = {
 
   '/': {
     view: 'homepage'
-  }
+  },
+
+  'patch /:model/:id':  'PatchController.routeToUpdate'
 
   /***************************************************************************
   *                                                                          *
