@@ -148,4 +148,39 @@ describe('UserController', function() {
         .end(done)
     });
   });
+
+  describe('Delete one user DELETE /users/1', function() {
+    it('Should return nothing', function (done) {
+      request(sails.hooks.http.app)
+        .delete('/users/2')
+        .expect(200)
+        .expect(validateJSONapi)
+        .expect({
+          'meta': {}
+        })
+        .end(done)
+    });
+  })
+
+  describe('Get only first created user GET /users', function() {
+    it('Should return first created user', function (done) {
+      request(sails.hooks.http.app)
+        .get('/users')
+        .expect(200)
+        .expect(validateJSONapi)
+        .expect({
+          'data': [{
+            'id': 1,
+            'type': 'users',
+            'attributes': {
+              'email': 'test@sanestack.com',
+              'first-name':'Test',
+              'last-name':'SaneStack'
+            }
+          }]
+        })
+        .end(done)
+    });
+  });
+
 });
