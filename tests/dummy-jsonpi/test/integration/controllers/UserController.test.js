@@ -183,4 +183,50 @@ describe('UserController', function() {
     });
   });
 
+  describe('Update first created user PATCH /users/1', function() {
+
+    var userToUpdate = {
+      'data': {
+        'id': 1,
+        'type': 'users',
+        'attributes': {
+          'email': 'test@sanestack.com',
+          'first-name':'Updated',
+          'last-name':'SaneStack'
+        }
+      }
+    };
+
+    it('Should return updated user', function (done) {
+      request(sails.hooks.http.app)
+        .patch('/users/1')
+        .expect(200)
+        .send(userToUpdate)
+        .expect(validateJSONapi)
+        .expect(userToUpdate)
+        .end(done)
+    });
+  });
+
+  describe('First user should be updated GET /users', function() {
+    it('Should return first created user with updated', function (done) {
+      request(sails.hooks.http.app)
+        .get('/users')
+        .expect(200)
+        .expect(validateJSONapi)
+        .expect({
+          'data': [{
+            'id': 1,
+            'type': 'users',
+            'attributes': {
+              'email': 'test@sanestack.com',
+              'first-name':'Updated',
+              'last-name':'SaneStack'
+            }
+          }]
+        })
+        .end(done)
+    });
+  });
+
 });
