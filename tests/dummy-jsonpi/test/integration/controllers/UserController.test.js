@@ -71,7 +71,7 @@ describe('UserController', function() {
     });
   });
 
-  describe('Add second userPOST /users', function() {
+  describe('Add second user POST /users', function() {
 
     it('Should return created user', function (done) {
 
