@@ -95,6 +95,20 @@ The `index` setting will generate an array of ID references for Ember Data, so b
 
 The `record` setting will sideload the complete record.
 
+### JSON API Blueprints
+
+The "json-api" blueprints make a basic sails app to work out of the box with Ember data and it's now default JSON API Rest Adapted introduced in Ember.js 1.13.
+These blueprints are still in heavy development and would currently only statisfy simple API with *NO* links, pagination, relationships, comments nor inclusions.
+
+- Run the generator with `sails generate ember-blueprints`
+- Patch method does not redirect to the update blueprint by default (see https://github.com/balderdashy/sails/pull/2006 for more details)
+  You will need to manually redirect all PATCH method to the update blueprint. A naive method is used in the dummy test app and can be apply to your project this way :
+  `cp node_modules/sails-generate-ember-blueprints/tests/dummy-jsonpi/api/controllers/PatchController.js api/controllers/`
+
+  Then add the following route to `config/routes.js`:
+  `'patch /:model/:id':  'PatchController.routeToUpdate'`
+
+To run tests, execute `npm test` in node_modules/sails-generate-ember-blueprints/tests/dummy-jsonpi
 
 ### Troubleshooting
 
