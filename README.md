@@ -5,6 +5,9 @@ Sails-Generate-Ember-Blueprints
 
 Ember Data compatible blueprints for Sails v0.10+
 
+`!` **Warning: this repository is no longer actively maintained. If you want to continue the development, please get in touch!**
+
+
 [Sails](http://www.sailsjs.org/) supports overriding the default blueprints, which gives us a remarkable flexibility in making Sails work together with a variety of clients and frontend libraries.
 
 The blueprints in this repository are meant as a starting point to modify the Sails API JSON output to make it work with Ember, Ember Data and the default Ember Data RESTAdapter.
