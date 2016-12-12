@@ -41,7 +41,9 @@ module.exports = function findOneRecord( req, res ) {
 				actionUtil.subscribeDeep( req, matchingRecord );
 			}
 
-			res.ok( Ember.buildResponse( Model, matchingRecord, associations, true, associated ) );
+			Ember.buildResponse( Model, matchingRecord, associations, true, associated ).then(function (emberizedJSON) {
+        res.ok(emberizedJSON);
+      });
 
 		} );
 
