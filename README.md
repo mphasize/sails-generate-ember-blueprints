@@ -5,7 +5,7 @@ Sails-Generate-Ember-Blueprints
 
 Ember Data compatible blueprints for Sails v0.10+
 
-`!` **Warning: this repository is no longer actively maintained. If you want to continue the development, please get in touch!**
+**Warning: this repository is no longer actively maintained. It has been superceded by [sails-ember-rest](https://github.com/mdconaway/sails-ember-rest). Please file all issues and pull requests under [sails-ember-rest](https://github.com/mdconaway/sails-ember-rest).**
 
 
 [Sails](http://www.sailsjs.org/) supports overriding the default blueprints, which gives us a remarkable flexibility in making Sails work together with a variety of clients and frontend libraries.
