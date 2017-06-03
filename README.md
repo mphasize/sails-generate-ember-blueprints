@@ -162,7 +162,7 @@ As a **quick example**, if you create a `post` model under the namespace `api/v1
 ```js
 {
   "post": {
-    "title": "A new post"
+    "title": "A new post",
     "content": "This is the wonderful content of this new post."
   }
 }
