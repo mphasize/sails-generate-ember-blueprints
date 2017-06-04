@@ -96,6 +96,8 @@ module.exports = function expand( req, res ) {
 
 			var json = {};
 			json[ documentIdentifier ] = related;
-			res.ok( json );
+
+			var customResponse = sails.config.blueprints.populateResponse || 'ok';
+			res[customResponse]( json );
 		} );
 };

@@ -41,7 +41,8 @@ module.exports = function findOneRecord( req, res ) {
 				actionUtil.subscribeDeep( req, matchingRecord );
 			}
 
-			res.ok( Ember.buildResponse( Model, matchingRecord, associations, true, associated ) );
+			var customResponse = sails.config.blueprints.findResponse || 'ok';
+			res[customResponse]( Ember.buildResponse( Model, matchingRecord, associations, true, associated ) );
 
 		} );
 
